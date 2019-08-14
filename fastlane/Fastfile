@@ -12,7 +12,7 @@
 
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
-
+ENV['MATCH_PASSWORD'] = '123456'
 default_platform(:ios)
 
 platform :ios do 
@@ -25,25 +25,39 @@ platform :ios do
         udid: option[:udid],
         username: option[:username]
       )
-      get_certificates(
-        development: true,
-        # force:true,
-        username: option[:username],
-        filename: "certificate"
-    )
-    get_provisioning_profile(
-      development: true,
-      force: true,
-      app_identifier:option[:bundleid],
-      username: option[:username],
-      filename: "embedded.mobileprovision"
+      sync_code_signing(
+        type: "development", 
+        readonly: false,
+        app_identifier:[option[:bundleid]],
+        username:option[:username],
+        keychain_name:'login.keychain-db',
+        keychain_password:'1234',
+        force:true,
+        force_for_new_devices:true,
+        skip_confirmation:true,
+        skip_docs:true,
+        output_path:'../'
+      )
 
-    )
-    import_certificate(
-      certificate_path: "certificate.cer",
-      certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
-      keychain_name:'login.keychain-db'
-    )
+    #   get_certificates(
+    #     development: true,
+    #     # force:true,
+    #     username: option[:username],
+    #     filename: "certificate"
+    # )
+    # get_provisioning_profile(
+    #   development: true,
+    #   force: true,
+    #   app_identifier:option[:bundleid],
+    #   username: option[:username],
+    #   filename: "embedded.mobileprovision"
+
+    # )
+    # import_certificate(
+    #   certificate_path: "certificate.cer",
+    #   certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
+    #   keychain_name:'login.keychain-db'
+    # )
     end
   
   end
