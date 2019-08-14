@@ -1,5 +1,6 @@
 require 'spaceship'
 require 'optparse'
+require 'cert'
 
 options = {}
 option_parser = OptionParser.new do |opts|
@@ -84,71 +85,72 @@ app.update_service(Spaceship::Portal.app_service.push_notification.on)
 # puts app
 # Find disabled device and enable it
 
-device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
-unless device
-    # Register a new device
-    unless options[:devicename]
-        options[:devicename] = options[:udid]
-    end
-    device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
-    device.enable!
+# device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+# unless device
+#     # Register a new device
+#     unless options[:devicename]
+#         options[:devicename] = options[:udid]
+#     end
+#     device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+#     device.enable!
 
-end
-csr, pkey = Spaceship.certificate.create_certificate_signing_request
+# end
+# csr, pkey = Spaceship.certificate.create_certificate_signing_request
 
      
-puts pkey
+# puts pkey
 
 # certs = Spaceship.certificate.development.all
 # puts certs
 # Use an existing certificate
 
-cert = Spaceship.certificate.development.all[1]
-if cert
-    # puts cert
-    File.write('development.cer',cert.download)
-else
-        # Create a new certificate signing request
-    csr, pkey = Spaceship.certificate.create_certificate_signing_request
+# cert = Spaceship.certificate.development.all[1]
+# if cert
+#     # puts cert
+#     File.write('development.cer',cert.download)
+# else
+#         # Create a new certificate signing request
+#     csr, pkey = Spaceship.certificate.create_certificate_signing_request
 
      
-    puts pkey
-    # Use the signing request to create a new development certificate
-    cert = Spaceship.certificate.development.create!(csr: csr)
-    # cert = Spaceship.certificate.development.all.first
-    # puts cert
-    File.write('development.cer',cert.download)
+#     puts pkey
+#     # Use the signing request to create a new development certificate
+#     cert = Spaceship.certificate.development.create!(csr: csr)
+#     # cert = Spaceship.certificate.development.all.first
+#     # puts cert
+#     File.write('development.cer',cert.download)
 
 
-end
-# or to do the same thing, just more Ruby like
-# Spaceship::Portal.provisioning_profile.all.find_all { |p| !p.valid? || !p.certificate_valid? }.map(&:repair!)
-# Download a specific profile as file
-matching_profiles = Spaceship.provisioning_profile.development.find_by_bundle_id(bundle_id: options[:bundleid])
-profile_dev = matching_profiles.first
-if profile_dev
-    profile_dev = profile_dev.update!
-    # puts profile_dev.certificate_valid?
-    # puts profile_dev.certificates
+# end
+# # or to do the same thing, just more Ruby like
+# # Spaceship::Portal.provisioning_profile.all.find_all { |p| !p.valid? || !p.certificate_valid? }.map(&:repair!)
+# # Download a specific profile as file
+# matching_profiles = Spaceship.provisioning_profile.development.find_by_bundle_id(bundle_id: options[:bundleid])
+# profile_dev = matching_profiles.first
+# if profile_dev
+#     profile_dev = profile_dev.update!
+#     # puts profile_dev.certificate_valid?
+#     # puts profile_dev.certificates
 
-     # Add all available devices to the profile
-     puts("Created Profile " + profile_dev.name)
-     File.write("embedded.mobileprovision", profile_dev.download)
-else
-    profile_dev = Spaceship.provisioning_profile.development.create!(bundle_id: app.bundle_id,
-        certificate: cert)
-    profile_dev = profile_dev.update!
-    # puts profile_dev.certificate_valid?
-    # puts profile_dev.certificates
+#      # Add all available devices to the profile
+#      puts("Created Profile " + profile_dev.name)
+#      File.write("embedded.mobileprovision", profile_dev.download)
+# else
+#     profile_dev = Spaceship.provisioning_profile.development.create!(bundle_id: app.bundle_id,
+#         certificate: cert)
+#     profile_dev = profile_dev.update!
+#     # puts profile_dev.certificate_valid?
+#     # puts profile_dev.certificates
 
-     # Add all available devices to the profile
-    puts("Created Profile " + profile_dev.name)
-    File.write("embedded.mobileprovision", profile_dev.download)
-end
+#      # Add all available devices to the profile
+#     puts("Created Profile " + profile_dev.name)
+#     File.write("embedded.mobileprovision", profile_dev.download)
+# end
 
 # puts profile_dev
 
+result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}'`
 
-
+puts result
 
 # profile.download

@@ -15,9 +15,36 @@
 
 default_platform(:ios)
 
-platform :ios do
+platform :ios do 
   desc "Description of what the lane does"
-  lane :custom_lane do
+  lane :hello do |option|
     # add actions here: https://docs.fastlane.tools/actions
+    if option[:username] and option[:bundleid]
+      register_device(
+        name: option[:devicename],
+        udid: option[:udid],
+        username: option[:username]
+      )
+      get_certificates(
+        development: true,
+        # force:true,
+        username: option[:username],
+        filename: "certificate"
+    )
+    get_provisioning_profile(
+      development: true,
+      force: true,
+      app_identifier:option[:bundleid],
+      username: option[:username],
+      filename: "embedded.mobileprovision"
+
+    )
+    import_certificate(
+      certificate_path: "certificate.cer",
+      certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
+      keychain_name:'login.keychain-db'
+    )
+    end
+  
   end
 end
