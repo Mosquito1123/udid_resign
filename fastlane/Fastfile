@@ -31,12 +31,12 @@ platform :ios do
         app_identifier:[option[:bundleid]],
         username:option[:username],
         keychain_name:'login.keychain-db',
-        keychain_password:'1234',
+        keychain_password:'123456-@',
         force:true,
         force_for_new_devices:true,
         skip_confirmation:true,
         skip_docs:true,
-        output_path:'../'
+        output_path:'/Users/baifu/Desktop/udid_resign/'
       )
 
     #   get_certificates(

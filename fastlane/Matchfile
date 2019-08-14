@@ -1,4 +1,4 @@
-git_url("https://github.com/Mosquito1123/certificatesandmobileprofiles.git")
+git_url("https://Mosquito1123:wentong12@github.com/Mosquito1123/certificatesandmobileprofiles.git")
 
 storage_mode("git")
 
