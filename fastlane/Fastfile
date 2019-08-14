@@ -20,44 +20,50 @@ platform :ios do
   lane :hello do |option|
     # add actions here: https://docs.fastlane.tools/actions
     if option[:username] and option[:bundleid]
-      register_device(
-        name: option[:devicename],
-        udid: option[:udid],
-        username: option[:username]
-      )
-      sync_code_signing(
-        type: "development", 
-        readonly: false,
-        app_identifier:[option[:bundleid]],
-        username:option[:username],
-        keychain_name:'login.keychain-db',
-        keychain_password:'123456-@',
-        force:true,
-        force_for_new_devices:true,
-        skip_confirmation:true,
-        skip_docs:true,
-        output_path:'/Users/baifu/Desktop/udid_resign/'
-      )
+      # register_device(
+      #   name: option[:devicename],
+      #   udid: option[:udid],
+      #   username: option[:username]
+      # )
+      # sync_code_signing(
+      #   type: "development", 
+      #   readonly: false,
+      #   app_identifier:[option[:bundleid]],
+      #   username:option[:username],
+      #   keychain_name:'login.keychain-db',
+      #   keychain_password:'1234',
+      #   # force:true,
+      #   force_for_new_devices:true,
+      #   skip_confirmation:true,
+      #   skip_docs:true,
+      #   git_full_name:'Mosquito1123',
+      #   output_path:'/Users/elen/Desktop/udid_resign/tmp',
+      #   template_name:'embedded'
+      # )
 
-    #   get_certificates(
-    #     development: true,
-    #     # force:true,
-    #     username: option[:username],
-    #     filename: "certificate"
-    # )
-    # get_provisioning_profile(
-    #   development: true,
-    #   force: true,
-    #   app_identifier:option[:bundleid],
-    #   username: option[:username],
-    #   filename: "embedded.mobileprovision"
+      get_certificates(
+        development: true,
+        # force:true,
+        username: option[:username],
+        filename: "certificate",
+        output_path:'/Users/elen/Desktop/udid_resign/tmp'
+    )
+    get_provisioning_profile(
+      development: true,
+      force: false,
+      app_identifier:option[:bundleid],
+      username: option[:username],
+      filename: "embedded.mobileprovision",
+      output_path:'/Users/elen/Desktop/udid_resign/tmp'
 
-    # )
-    # import_certificate(
-    #   certificate_path: "certificate.cer",
-    #   certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
-    #   keychain_name:'login.keychain-db'
-    # )
+    )
+    import_certificate(
+      certificate_path: "certificate.cer",
+      certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
+      keychain_name:'login.keychain-db'
+    )
+    install_provisioning_profile(path: "/Users/elen/Desktop/udid_resign/tmp/embedded.mobileprovision")
+
     end
   
   end

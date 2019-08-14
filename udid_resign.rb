@@ -1,7 +1,7 @@
 require 'spaceship'
 require 'optparse'
 require 'cert'
-
+require 'pathname' 
 options = {}
 option_parser = OptionParser.new do |opts|
   # 这里是这个命令行工具的帮助信息
@@ -15,10 +15,26 @@ option_parser = OptionParser.new do |opts|
         exit
     end
   end 
+  #Input
+  options[:input] = '' 
+  opts.on('-i INPUT','--input Input','Ipa Input Path') do |value|
+    options[:input] = value
+    if options[:input] == '' || options[:input] == nil
+      puts 'Please Input Ipa Path'
+      exit
+    end
+  end
+
+  #Output
+  
+
+  opts.on('-o OUTPUT','--output Output','Ipa Output Path') do |value|
+    options[:output] = value
+  end
 
   #BundleID
   opts.on('-b BUNDLEID','--bundleid BundleID','Pass-in Bundle Identifier') do |value|
-    options[:bundle_id] = bundle_id
+    options[:bundle_id] = value
   end
 
   #Username
@@ -30,7 +46,12 @@ option_parser = OptionParser.new do |opts|
   #Password
   options[:password] = '209523De1A'
   opts.on('-p PASSWORD','--password Password','Password Of Apple ID') do |value|
-    options[:password] = password
+    options[:password] = value
+  end
+  #Force New Certificate
+  options[:force] = false
+  opts.on('-f FORCE','--force Force','Force New Certificate') do |value|
+    options[:force] = value
   end
  
 
@@ -39,7 +60,7 @@ option_parser = OptionParser.new do |opts|
   opts.on('-n APPNAME', '--appname AppName', 'Pass-in App Name') do |value|
     options[:appname] = value
   end
-#   options[:devicename] = 'Default Phone'
+  options[:devicename] = 'Default Phone'
   opts.on('-N DEVICENAME','--devicename DeviceName','Pass-in Device Name') do |value|
     options[:devicename] = value
   end
@@ -57,6 +78,13 @@ if options[:udid] == '' || options[:udid] == nil
 end
 
 Spaceship.login(options[:username],options[:password])
+filepath = Pathname.new(File.dirname(__FILE__)).realpath
+
+
+# Create default output path
+if options[:output] = '' || options[:output] = nil
+  options[:output] = File.join(filepath,'tmp')
+end
 # Create a new app
 
 if options[:bundleid] == '' || options[:bundleid] == nil
@@ -85,16 +113,16 @@ app.update_service(Spaceship::Portal.app_service.push_notification.on)
 # puts app
 # Find disabled device and enable it
 
-# device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
-# unless device
-#     # Register a new device
-#     unless options[:devicename]
-#         options[:devicename] = options[:udid]
-#     end
-#     device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
-#     device.enable!
+device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+unless device
+    # Register a new device
+    unless options[:devicename]
+        options[:devicename] = options[:udid]
+    end
+    device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+    device.enable!
 
-# end
+end
 # csr, pkey = Spaceship.certificate.create_certificate_signing_request
 
      
@@ -153,4 +181,22 @@ result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:b
 
 puts result
 
+cer_path = File.join(filepath,'tmp','certificate.cer')
+pem_path = File.join(filepath,'tmp','certificate.pem')
+profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
+resign_file_path = File.join(filepath,'wt_isign_macos.py')
+
+cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
+puts cer_to_pem
+get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
+puts get_cer_subject_mobileprovision
+sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
+identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
+puts identity
+
 # profile.download
+
+if options[:input]
+resign = `python #{resign_file_path} -i #{options[:input]} -d '#{identity}' -o #{options[:output]} -m #{profile_path}`
+puts resign
+end
