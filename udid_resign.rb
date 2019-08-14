@@ -103,7 +103,7 @@ puts pkey
 # puts certs
 # Use an existing certificate
 
-cert = Spaceship.certificate.development.all.first
+cert = Spaceship.certificate.development.all[1]
 if cert
     # puts cert
     File.write('development.cer',cert.download)
