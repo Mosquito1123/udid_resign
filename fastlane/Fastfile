@@ -46,7 +46,7 @@ platform :ios do
         # force:true,
         username: option[:username],
         filename: "certificate",
-        output_path:'/Users/elen/Desktop/udid_resign/tmp'
+        output_path:'/Users/www/Desktop/udid_resign/tmp'
     )
     get_provisioning_profile(
       development: true,
@@ -54,7 +54,7 @@ platform :ios do
       app_identifier:option[:bundleid],
       username: option[:username],
       filename: "embedded.mobileprovision",
-      output_path:'/Users/elen/Desktop/udid_resign/tmp'
+      output_path:'/Users/www/Desktop/udid_resign/tmp'
 
     )
     import_certificate(
@@ -62,7 +62,7 @@ platform :ios do
       certificate_password: ENV["CERTIFICATE_PASSWORD"] || "123456",
       keychain_name:'login.keychain-db'
     )
-    install_provisioning_profile(path: "/Users/elen/Desktop/udid_resign/tmp/embedded.mobileprovision")
+    install_provisioning_profile(path: "/Users/www/Desktop/udid_resign/tmp/embedded.mobileprovision")
 
     end
   

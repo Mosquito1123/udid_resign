@@ -193,10 +193,12 @@ puts get_cer_subject_mobileprovision
 sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
 identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
 puts identity
-
+codesign_identity = identity.strip
 # profile.download
 
 if options[:input]
-resign = `python #{resign_file_path} -i #{options[:input]} -d '#{identity}' -o #{options[:output]} -m #{profile_path}`
+resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
+puts resign_cmd
+resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 puts resign
 end
