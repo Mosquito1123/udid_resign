@@ -72,6 +72,13 @@ end.parse!
 
 puts options.inspect
 # if options[:username]
+
+
+
+if options[:input] == '' || options[:input] == nil
+  puts 'Please Input Ipa Path'
+  exit
+end
 if options[:udid] == '' || options[:udid] == nil
     puts 'Please Input UDID'
     exit
@@ -119,8 +126,15 @@ unless device
     unless options[:devicename]
         options[:devicename] = options[:udid]
     end
-    device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
-    device.enable!
+    begin
+      device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+      device.enable!
+    rescue Exception => exception
+      puts exception.message
+      puts exception.backtrace.inspect
+      exit
+    end
+    
 
 end
 # csr, pkey = Spaceship.certificate.create_certificate_signing_request
