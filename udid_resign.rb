@@ -85,7 +85,7 @@ if options[:udid] == '' || options[:udid] == nil
 end
 # Create default output path
 if options[:output] = '' || options[:output] = nil
-  puts 'Please Input UDID'
+  puts 'Please Output Ipa Path'
   exit
 end
 Spaceship.login(options[:username],options[:password])
