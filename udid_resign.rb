@@ -27,7 +27,7 @@ option_parser = OptionParser.new do |opts|
 
   #Output
   
-
+  options[:output] = '' 
   opts.on('-o OUTPUT','--output Output','Ipa Output Path') do |value|
     options[:output] = value
   end
@@ -85,8 +85,8 @@ if options[:udid] == '' || options[:udid] == nil
 end
 # Create default output path
 if options[:output] = '' || options[:output] = nil
-  puts 'Please Output Ipa Path'
-  exit
+    puts 'Please Output Ipa Path'
+    exit
 end
 Spaceship.login(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
