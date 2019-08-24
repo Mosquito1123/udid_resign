@@ -84,7 +84,7 @@ if options[:udid] == '' || options[:udid] == nil
     exit
 end
 # Create default output path
-if options[:output] = '' || options[:output] = nil
+if options[:output] == '' || options[:output] == nil
     puts 'Please Output Ipa Path'
     exit
 end
