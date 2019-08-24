@@ -98,11 +98,11 @@ if options[:bundleid] == '' || options[:bundleid] == nil
     companyname = options[:username].split('@').first
     lastname = options[:username].split('@').first.reverse!
     options[:bundleid] = ['com',companyname,lastname].join('.')
-    puts options[:bundleid]
+    # puts options[:bundleid]
 end
 if options[:appname] == '' || options[:appname] == nil
     options[:appname] = options[:username].split('@').first.reverse!
-    puts options[:appname]
+    # puts options[:appname]
 end
 
 app = Spaceship::Portal.app.find(options[:bundleid])
@@ -191,28 +191,34 @@ end
 
 # puts profile_dev
 
-result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}'`
+`fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}'`
 
-puts result
+# puts result
 
 cer_path = File.join(filepath,'tmp','certificate.cer')
 pem_path = File.join(filepath,'tmp','certificate.pem')
 profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
 
-cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
-puts cer_to_pem
+`openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
+# puts cer_to_pem
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
-puts get_cer_subject_mobileprovision
+# puts get_cer_subject_mobileprovision
 sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
 identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
-puts identity
+# puts identity
 codesign_identity = identity.strip
 # profile.download
 
 if options[:input]
-resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
-puts resign_cmd
+# resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
+# puts resign_cmd
 resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
-puts resign
+# puts resign
+if resign.include? "success"
+  puts "success"
+else
+  puts "failure"
+end
+
 end
