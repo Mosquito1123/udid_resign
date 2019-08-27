@@ -60,7 +60,7 @@ option_parser = OptionParser.new do |opts|
   opts.on('-n APPNAME', '--appname AppName', 'Pass-in App Name') do |value|
     options[:appname] = value
   end
-  options[:devicename] = 'Default Phone'
+#  options[:devicename] = 'Default Phone'
   opts.on('-N DEVICENAME','--devicename DeviceName','Pass-in Device Name') do |value|
     options[:devicename] = value
   end
@@ -121,25 +121,28 @@ app.update_service(Spaceship::Portal.app_service.push_notification.on)
 # puts app
 # Find disabled device and enable it
 
-device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
-unless device
+#device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+#device = device.enable!
+#unless device
     # Register a new device
-    unless options[:devicename]
-        options[:devicename] = options[:udid]
-    end
-    begin
-      device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
-      device.enable!
-    rescue Exception => exception
-      puts exception.message
-      puts exception.backtrace.inspect
-      exit
-    end
+#    unless options[:devicename]
+#        options[:devicename] = options[:udid]
+#    end
+#    begin
+#      device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+#      device.enable!
+#    rescue Exception => exception
+#      puts exception.message
+#      puts exception.backtrace.inspect
+#      exit
+#    end
     
 
-end
+#end
 # csr, pkey = Spaceship.certificate.create_certificate_signing_request
-
+unless options[:devicename]
+        options[:devicename] = options[:udid]
+end
      
 # puts pkey
 

@@ -20,11 +20,11 @@ platform :ios do
   lane :hello do |option|
     # add actions here: https://docs.fastlane.tools/actions
     if option[:username] and option[:bundleid]
-      # register_device(
-      #   name: option[:devicename],
-      #   udid: option[:udid],
-      #   username: option[:username]
-      # )
+       register_device(
+         name: option[:devicename],
+         udid: option[:udid],
+         username: option[:username]
+       )
       # sync_code_signing(
       #   type: "development", 
       #   readonly: false,
@@ -43,14 +43,14 @@ platform :ios do
 
       get_certificates(
         development: true,
-        # force:true,
+#        force:true,
         username: option[:username],
-        filename: "certificate",
+        filename: "certificate.cer",
         output_path:'/srv/www/udid_resign/tmp'
     )
     get_provisioning_profile(
       development: true,
-      force: false,
+      force: true,
       app_identifier:option[:bundleid],
       username: option[:username],
       filename: "embedded.mobileprovision",
