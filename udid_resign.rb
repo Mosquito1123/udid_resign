@@ -49,7 +49,7 @@ option_parser = OptionParser.new do |opts|
     options[:password] = value
   end
   #Force New Certificate
-  options[:force] = false
+  options[:force] = true
   opts.on('-f FORCE','--force Force','Force New Certificate') do |value|
     options[:force] = value
   end
@@ -194,14 +194,17 @@ end
 # end
 
 # puts profile_dev
-
-result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}'`
-
-# puts result
-
+tmp_path = File.join(filepath,'tmp')
 cer_path = File.join(filepath,'tmp','certificate.cer')
-pem_path = File.join(filepath,'tmp','certificate.pem')
 profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
+`fastlane run register_device name:"#{options[:devicename]}" udid:"#{options[:udid]}" username:"#{options[:username]}"`
+`fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
+`fastlane run sigh development:true force:#{options[:force]} app_identifier:'#{options[:bundleid]}' username: '#{options[:username]}' filename:'embedded.mobileprovision' output_path:'#{tmp_path}'`
+# result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}' `
+# puts result
+`fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
+pem_path = File.join(filepath,'tmp','certificate.pem')
+
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
 
 cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
