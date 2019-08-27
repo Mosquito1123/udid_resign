@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>AppIDName</key>
-	<string>j28tjk</string>
+	<string>kugjfs</string>
 	<key>ApplicationIdentifierPrefix</key>
 	<array>
-	<string>VQMUR3RZ8A</string>
+	<string>7N84453JHK</string>
 	</array>
 	<key>CreationDate</key>
-	<date>2019-08-27T14:02:34Z</date>
+	<date>2019-08-27T18:05:00Z</date>
 	<key>Platform</key>
 	<array>
 		<string>iOS</string>
@@ -18,7 +18,7 @@
 	<false/>
 	<key>DeveloperCertificates</key>
 	<array>
-		<data>MIIFmDCCBICgAwIBAgIIUtcXZVPSGR4wDQYJKoZIhvcNAQELBQAwgZYxCzAJBgNVBAYTAlVTMRMwEQYDVQQKDApBcHBsZSBJbmMuMSwwKgYDVQQLDCNBcHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9uczFEMEIGA1UEAww7QXBwbGUgV29ybGR3aWRlIERldmVsb3BlciBSZWxhdGlvbnMgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMTkwODI3MDkxNDI3WhcNMjAwODI2MDkxNDI3WjCBizEaMBgGCgmSJomT8ixkAQEMCldRQldRN05NUE4xNDAyBgNVBAMMK2lQaG9uZSBEZXZlbG9wZXI6IEdvdXRlbiBTbGFzaCAoNVRNN1kzMkEzQikxEzARBgNVBAsMClZRTVVSM1JaOEExFTATBgNVBAoMDEdvdXRlbiBTbGFzaDELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDOApbfmnvLiW5PetTDhOeMN3DtJLilAcinOHZGKv/3UyRRwzT/czyB8qbkwwx52KTkqRlZOHwoBabIb3p1fR0ICGtB1d7RSh2hZCwPrhHElWQ4WVkjpHopnGNBhqHAkV/4Kn9CDYY2CxfWnt143BSdDlyvWhH76iTs1QaTrP17aYACkJtHhK1kvCAEplVwvhWauuv+s8+643dX8BTZA0kBjCHhAFV0wZmi8NGYd5rwolaELlQXE1yc7VfofsjmAd754Sqj6lWAX0iAC1bNsVfz+WxiIc+KFkeyKsBhNO7B1T2gQsbFC4N/vZb8UalgppPICGr6dMf8UM/safeLNSTXAgMBAAGjggHxMIIB7TAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIgnFwmpthhgi+zruvZHWcVSVKO3MD8GCCsGAQUFBwEBBDMwMTAvBggrBgEFBQcwAYYjaHR0cDovL29jc3AuYXBwbGUuY29tL29jc3AwMy13d2RyMDEwggEdBgNVHSAEggEUMIIBEDCCAQwGCSqGSIb3Y2QFATCB/jCBwwYIKwYBBQUHAgIwgbYMgbNSZWxpYW5jZSBvbiB0aGlzIGNlcnRpZmljYXRlIGJ5IGFueSBwYXJ0eSBhc3N1bWVzIGFjY2VwdGFuY2Ugb2YgdGhlIHRoZW4gYXBwbGljYWJsZSBzdGFuZGFyZCB0ZXJtcyBhbmQgY29uZGl0aW9ucyBvZiB1c2UsIGNlcnRpZmljYXRlIHBvbGljeSBhbmQgY2VydGlmaWNhdGlvbiBwcmFjdGljZSBzdGF0ZW1lbnRzLjA2BggrBgEFBQcCARYqaHR0cDovL3d3dy5hcHBsZS5jb20vY2VydGlmaWNhdGVhdXRob3JpdHkvMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMDMB0GA1UdDgQWBBTWiA3r1/NHpNHMpiuLwQGbIpgJmDAOBgNVHQ8BAf8EBAMCB4AwEwYKKoZIhvdjZAYBAgEB/wQCBQAwDQYJKoZIhvcNAQELBQADggEBABQyqFr+oOYCyx/DxwvV5IMG85KD+cZLZLpZMXHERiVUHTADr8ONemD90TWnpMUTmMVn82gcL/KM1PDIPbCYByYj+WlKZCr4xswgKkpnsJLn+b+ESw+SmYWN1Qmvo7UJzlPqfAnN+Rds1qTfIYWkNp5kS6Vz3bryS5+BnA+GFKmVnTr/0yenHtm9vn/WcEWgmoVWvDbQDweeShza2XA6ttZKXb9riWpZOLyhUdcTdSvtbfhGW1/EoJ6O9VqYe9Z1Afy+uFovEUsa8dxZe66xdr0TIhP7GJJjaZwzRNN88oh23gj0APMPYyu8m01TM/8CJeE+/E0va98Y3DaICYh7QdY=</data>
+		<data>MIIFmDCCBICgAwIBAgIIMjd7eFOtGm8wDQYJKoZIhvcNAQELBQAwgZYxCzAJBgNVBAYTAlVTMRMwEQYDVQQKDApBcHBsZSBJbmMuMSwwKgYDVQQLDCNBcHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9uczFEMEIGA1UEAww7QXBwbGUgV29ybGR3aWRlIERldmVsb3BlciBSZWxhdGlvbnMgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMTkwODI3MDkzNDQ0WhcNMjAwODI2MDkzNDQ0WjCBizEaMBgGCgmSJomT8ixkAQEMCjVQUjlCVFczVTMxNDAyBgNVBAMMK2lQaG9uZSBEZXZlbG9wZXI6IENlYW5scyBXb2FiayAoQks4Nzc4OUtIOCkxEzARBgNVBAsMCjdOODQ0NTNKSEsxFTATBgNVBAoMDENlYW5scyBXb2FiazELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDmZhUz1xo/KTkrXXtT6sEMu2TPJoh7cEWDBMpcR90eznqEfIR7hrvF7Te4lUJRb8X6WWR0ZpAD03jE0ktxu425I/dhLGEY0JplPOfb+zOsTQyDtRIn2RhUBCXnI2yc/FLmMycWI9/jwv6ikIWIbXMaYsL1M1MXUrpyZm8MpbQgRm6QkJRJFbHCd7IHJVHuQHd7JGsuHVi5bs+JmW4CBfRue1m3KLs/1qVywvt3HigxCPjnpBhNOSYxUpQdNlXPujg4vHs2MKx4g6ZYCHJFSfXXtWAYz3W1or4z/Myy/Yo/DirAPj5zoV7JhUJa/sHeLd1bGCmVi+iLV8dHbPAmG66RAgMBAAGjggHxMIIB7TAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIgnFwmpthhgi+zruvZHWcVSVKO3MD8GCCsGAQUFBwEBBDMwMTAvBggrBgEFBQcwAYYjaHR0cDovL29jc3AuYXBwbGUuY29tL29jc3AwMy13d2RyMDEwggEdBgNVHSAEggEUMIIBEDCCAQwGCSqGSIb3Y2QFATCB/jCBwwYIKwYBBQUHAgIwgbYMgbNSZWxpYW5jZSBvbiB0aGlzIGNlcnRpZmljYXRlIGJ5IGFueSBwYXJ0eSBhc3N1bWVzIGFjY2VwdGFuY2Ugb2YgdGhlIHRoZW4gYXBwbGljYWJsZSBzdGFuZGFyZCB0ZXJtcyBhbmQgY29uZGl0aW9ucyBvZiB1c2UsIGNlcnRpZmljYXRlIHBvbGljeSBhbmQgY2VydGlmaWNhdGlvbiBwcmFjdGljZSBzdGF0ZW1lbnRzLjA2BggrBgEFBQcCARYqaHR0cDovL3d3dy5hcHBsZS5jb20vY2VydGlmaWNhdGVhdXRob3JpdHkvMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMDMB0GA1UdDgQWBBTN3uvpcOItyv24qj2uGAGQmTbUNDAOBgNVHQ8BAf8EBAMCB4AwEwYKKoZIhvdjZAYBAgEB/wQCBQAwDQYJKoZIhvcNAQELBQADggEBAHkKRotIPyq2Qiilu3HRHa1yg/8A/mAhrhUY7nk2rSDpdw6NTCu4CvY/yuC6eioyxJvLzj7EULaVECF4thzs/q/DUudC0bLYAzYtu2Wl7gIRzBJszan6Fg6f446rlEgFT4A2TyL9mq0r5Kk9cgcXBLVZ1VaLDMZeKxSLFLlty4oHmfyrhrWBuik8U4tezvazll7vS9MifyLcsbHi5wGUI6tPuptV/P7o8QQja/6DL3DtrnT1AGioxRa6rJRCRqSCXcE0A+fSjix+bSM+Xq09FOxjQu5jTj/W4f6xJ6KaHiN3DOohpUORQdjpoCc6CfrsAsyYPid+yU/+jtE9DGMZgik=</data>
 	</array>
 
 																								
@@ -29,36 +29,36 @@
 						<key>aps-environment</key>
 		<string>development</string>
 						<key>application-identifier</key>
-		<string>VQMUR3RZ8A.com.kjt82j.j28tjk</string>
+		<string>7N84453JHK.com.sfjguk.kugjfs</string>
 						<key>keychain-access-groups</key>
 		<array>
-				<string>VQMUR3RZ8A.*</string>
+				<string>7N84453JHK.*</string>
 		</array>
 						<key>get-task-allow</key>
 		<true/>
 						<key>com.apple.developer.team-identifier</key>
-		<string>VQMUR3RZ8A</string>
+		<string>7N84453JHK</string>
 
 	</dict>
 	<key>ExpirationDate</key>
-	<date>2020-08-26T14:02:34Z</date>
+	<date>2020-08-26T18:05:00Z</date>
 	<key>Name</key>
-	<string>com.kjt82j.j28tjk Development</string>
+	<string>com.sfjguk.kugjfs Development</string>
 	<key>ProvisionedDevices</key>
 	<array>
-		<string>7313dbcb2be78b5a61e1b378fcb1b9dd555d17d9</string>
-		<string>48c7351ad530f48ac098629026dd453992b4281a</string>
+		<string>00008020-000C0D563602002E</string>
+		<string>00008020-0005152C01DA002E</string>
 	</array>
 	<key>TeamIdentifier</key>
 	<array>
-		<string>VQMUR3RZ8A</string>
+		<string>7N84453JHK</string>
 	</array>
 	<key>TeamName</key>
-	<string>Gouten Slash</string>
+	<string>Ceanls Woabk</string>
 	<key>TimeToLive</key>
 	<integer>365</integer>
 	<key>UUID</key>
-	<string>77ac942c-cb12-4dc7-ab9f-b342dbc65b16</string>
+	<string>e81999f5-1ce8-45cb-9b86-56e747758c75</string>
 	<key>Version</key>
 	<integer>1</integer>
 </dict>
