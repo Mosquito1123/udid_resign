@@ -88,6 +88,9 @@ if options[:output] == '' || options[:output] == nil
     puts 'Please Output Ipa Path'
     exit
 end
+default_keychain = `security default-keychain`
+default_keychain_result = default_keychain.strip
+`security unlock-keychain -p 123456  #{default_keychain_result}`
 Spaceship.login(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
