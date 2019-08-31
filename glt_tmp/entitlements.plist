@@ -3,18 +3,18 @@
 <plist version="1.0">
 <dict>
 	<key>application-identifier</key>
-	<string>VQMUR3RZ8A.com.kjt82j.j28tjk</string>
+	<string>7N84453JHK.com.sfjguk.kugjfs</string>
 	<key>aps-environment</key>
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<string>*</string>
 	<key>com.apple.developer.team-identifier</key>
-	<string>VQMUR3RZ8A</string>
+	<string>7N84453JHK</string>
 	<key>get-task-allow</key>
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>VQMUR3RZ8A.*</string>
+		<string>7N84453JHK.*</string>
 	</array>
 </dict>
 </plist>

@@ -201,15 +201,15 @@ tmp_path = File.join(filepath,'tmp')
 cer_path = File.join(filepath,'tmp','certificate.cer')
 profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
 register_device_cmd = `fastlane run register_device name:"#{options[:devicename]}" udid:"#{options[:udid]}" username:"#{options[:username]}"`
-puts register_device_cmd
+#puts register_device_cmd
 cert_cmd = `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
-puts cert_cmd
+#puts cert_cmd
 profile_cmd = `fastlane run sigh development:true force:#{options[:force]} app_identifier:'#{options[:bundleid]}' username:'#{options[:username]}' filename:'embedded.mobileprovision' output_path:'#{tmp_path}'`
-puts profile_cmd
+#puts profile_cmd
 # result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}' `
 # puts result
 import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
-puts import_certificate_cmd
+#puts import_certificate_cmd
 pem_path = File.join(filepath,'tmp','certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
