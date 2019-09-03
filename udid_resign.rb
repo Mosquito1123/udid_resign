@@ -2,6 +2,11 @@ require 'spaceship'
 require 'optparse'
 require 'cert'
 require 'pathname' 
+time1 = Time.new
+ 
+puts "当前时间 : " + time1.inspect
+ 
+
 options = {}
 option_parser = OptionParser.new do |opts|
   # 这里是这个命令行工具的帮助信息
@@ -236,3 +241,6 @@ else
 end
 
 end
+# Time.now 功能相同
+time2 = Time.now
+puts "当前时间 : " + time2.inspect
