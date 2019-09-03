@@ -234,6 +234,9 @@ if options[:input] and options[:output]
 # puts resign_cmd
 resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 # puts resign
+# Time.now 功能相同
+time2 = Time.now
+puts "当前时间 : " + time2.inspect
 if resign.include? "success"
   puts "success"
 else
@@ -241,6 +244,3 @@ else
 end
 
 end
-# Time.now 功能相同
-time2 = Time.now
-puts "当前时间 : " + time2.inspect
