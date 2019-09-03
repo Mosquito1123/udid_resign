@@ -96,7 +96,7 @@ end
 
 timea = Time.new
  
-puts "当前时间 : " + timea.inspect
+puts "解锁钥匙串 : " + timea.inspect
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
@@ -106,7 +106,7 @@ filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 timeb = Time.new
  
-puts "当前时间 : " + timeb.inspect
+puts "开始生成创建APP : " + timeb.inspect
 # Create a new app
 
 if options[:bundleid] == '' || options[:bundleid] == nil
@@ -131,7 +131,7 @@ app.update_service(Spaceship::Portal.app_service.push_notification.on)
 
 timec = Time.new
  
-puts "当前时间 : " + timec.inspect
+puts "生成APP: " + timec.inspect
 # puts app
 
 # puts app
@@ -215,30 +215,30 @@ cer_path = File.join(filepath,'tmp','certificate.cer')
 profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
 timed = Time.new
  
-puts "当前时间 : " + timed.inspect
-`bundle init`
-register_device_cmd = `bundle exec fastlane run register_device name:"#{options[:devicename]}" udid:"#{options[:udid]}" username:"#{options[:username]}"`
+puts "开始注册设备 : " + timed.inspect
+
+register_device_cmd = `fastlane run register_device name:"#{options[:devicename]}" udid:"#{options[:udid]}" username:"#{options[:username]}"`
 #puts register_device_cmd
 timee = Time.new
  
-puts "当前时间 : " + timee.inspect
-cert_cmd = `bundle exec fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
+puts "开始获取证书 : " + timee.inspect
+cert_cmd = `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 #puts cert_cmd
 timef = Time.new
  
-puts "当前时间 : " + timef.inspect
-profile_cmd = `bundle exec fastlane run sigh development:true force:#{options[:force]} app_identifier:'#{options[:bundleid]}' username:'#{options[:username]}' filename:'embedded.mobileprovision' output_path:'#{tmp_path}'`
+puts "开始获取描述文件 : " + timef.inspect
+profile_cmd = `fastlane run sigh development:true force:#{options[:force]} app_identifier:'#{options[:bundleid]}' username:'#{options[:username]}' filename:'embedded.mobileprovision' output_path:'#{tmp_path}'`
 #puts profile_cmd
 # result = `fastlane hello username:'#{options[:username]}' bundleid:'#{options[:bundleid]}' udid:'#{options[:udid]}' devicename:'#{options[:devicename]}' `
 # puts result
 timeg = Time.new
  
 puts "当前时间 : " + timeg.inspect
-import_certificate_cmd = `bundle exec fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
+import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
 timeh = Time.new
  
-puts "当前时间 : " + timeh.inspect
+puts "开始重签 : " + timeh.inspect
 pem_path = File.join(filepath,'tmp','certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
@@ -260,7 +260,7 @@ resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identi
 # puts resign
 # Time.now 功能相同
 time2 = Time.now
-puts "当前时间 : " + time2.inspect
+puts "重签完成 : " + time2.inspect
 if resign.include? "success"
   puts "success"
 else
