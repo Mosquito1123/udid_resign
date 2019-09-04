@@ -155,14 +155,13 @@ end
 timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
-cert_cmd = `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
-puts cert_cmd
+`fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 timef = Time.new
 puts "开始获取描述文件 : " + timef.inspect
 cert = Spaceship.certificate.development.all
 puts cert
-profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
-profile_dev = Spaceship.provisioning_profile.development.create!(bundle_id: app.bundle_id,
+profile_name = app.bundle_id + " #{Time.now.to_i}"
+profile_dev = Spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
         certificate: cert)
 puts profile_dev
 File.write(profile_path, profile_dev.download)
