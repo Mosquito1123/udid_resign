@@ -138,7 +138,6 @@ timec = Time.new
 puts "生成APP: " + timec.inspect
 
 device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
-device = device.enable!
 # puts device
 unless device
     #Register a new device
@@ -147,13 +146,14 @@ unless device
    end
    begin
      device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
-     device.enable!
    rescue Exception => exception
      puts exception.message
      puts exception.backtrace.inspect
      exit
    end
 end
+device = device.enable!
+
 timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
