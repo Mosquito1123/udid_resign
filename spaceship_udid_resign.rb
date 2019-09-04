@@ -137,7 +137,7 @@ device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
 device = device.enable!
 puts device
 unless device
-    Register a new device
+    #Register a new device
    unless options[:devicename]
        options[:devicename] = options[:udid]
    end
