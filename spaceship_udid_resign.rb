@@ -150,6 +150,7 @@ unless device
      exit
    end
 end
+timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
 cert_cmd = `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
