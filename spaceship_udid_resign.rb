@@ -157,7 +157,7 @@ end
 timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
-cert_first= Spaceship.certificate.development.first
+cert_first= Spaceship.certificate.development.all.first
 if cert_first
     # puts cert
     File.write(cer_path,cert_first.download)
