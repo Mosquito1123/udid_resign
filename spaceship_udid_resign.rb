@@ -2,6 +2,8 @@ require 'spaceship'
 require 'optparse'
 require 'cert'
 require 'pathname' 
+require 'fastlane_core'
+
 time1 = Time.new
  
 puts "当前时间 : " + time1.inspect
@@ -155,7 +157,23 @@ end
 timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
-`fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
+cert_first= Spaceship.certificate.development.first
+if cert_first
+    # puts cert
+    File.write(cer_path,cert_first.download)
+else
+        # Create a new certificate signing request
+    csr, pkey = Spaceship.certificate.create_certificate_signing_request
+    puts pkey
+    # Use the signing request to create a new development certificate
+    cert_first = Spaceship.certificate.development.create!(csr: csr)
+    # cert = Spaceship.certificate.development.all.first
+    # puts cert
+    File.write(cer_path,cert_first.download)
+end
+
+# origin fastlane cert
+# `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 timef = Time.new
 puts "开始获取描述文件 : " + timef.inspect
 cert = Spaceship.certificate.development.all
@@ -168,7 +186,12 @@ File.write(profile_path, profile_dev.download)
 timeg = Time.new
  
 puts "当前时间 : " + timeg.inspect
-import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
+
+keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
+FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
+
+# origin fastlane import_certificate
+# import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
 timeh = Time.new
  
