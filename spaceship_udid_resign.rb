@@ -196,11 +196,11 @@ FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_pas
 timeh = Time.new
  
 puts "开始重签 : " + timeh.inspect
-pem_path = File.join(filepath,'tmp','certificate.pem')
+# pem_path = File.join(filepath,'tmp','certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
 
-cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
+# cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
 # puts get_cer_subject_mobileprovision
