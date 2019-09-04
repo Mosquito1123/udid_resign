@@ -103,7 +103,9 @@ default_keychain_result = default_keychain.strip
 Spaceship.login(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
-
+tmp_path = File.join(filepath,'tmp')
+cer_path = File.join(filepath,'tmp','certificate.cer')
+profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
 timeb = Time.new
  
 puts "开始生成创建APP : " + timeb.inspect
