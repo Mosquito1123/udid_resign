@@ -137,7 +137,7 @@ puts "生成APP: " + timec.inspect
 
 device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
 device = device.enable!
-puts device
+# puts device
 unless device
     #Register a new device
    unless options[:devicename]
@@ -159,11 +159,11 @@ puts "开始获取证书 : " + timee.inspect
 timef = Time.new
 puts "开始获取描述文件 : " + timef.inspect
 cert = Spaceship.certificate.development.all
-puts cert
+# puts cert
 profile_name = app.bundle_id + " #{Time.now.to_i}"
 profile_dev = Spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
         certificate: cert)
-puts profile_dev
+# puts profile_dev
 File.write(profile_path, profile_dev.download)
 timeg = Time.new
  
