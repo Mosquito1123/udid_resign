@@ -235,7 +235,7 @@ if options[:input] and options[:output]
     end
   rescue => exception
     puts exception
-    resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
+    resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o "#{options[:output]}" -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
     puts "重签完成 : " + " #{Time.now}"
@@ -244,6 +244,7 @@ if options[:input] and options[:output]
     else
     puts "failure"
     end
+    exit
 
   end
 # resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
