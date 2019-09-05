@@ -130,8 +130,8 @@ unless app
     app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
     
 end
-app.update_service(spaceship.app_service.associated_domains.on)
-app.update_service(spaceship.app_service.push_notification.on)
+app.update_service(Spaceship::Portal.app_service.associated_domains.on)
+app.update_service(Spaceship::Portal.app_service.push_notification.on)
 
 timec = Time.new
  
