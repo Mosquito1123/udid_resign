@@ -215,26 +215,26 @@ codesign_identity = identity.strip
 # profile.download
 
 if options[:input] and options[:output]
-  begin
-    download = open(options[:input])
-    filename = download.base_uri.to_s.split('/')[-1]
-    # resigned_filename = "resigned_" + download.base_uri.to_s.split('/')[-1] 
-    download_path = File.join(tmp_path,filename)
-    # resigned_path = File.join(tmp_path,resigned_filename)
-    # display_name = resigned_filename.gsub(/.ipa/,'')
-    IO.copy_stream(download, download_path)
-    resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, nil, nil, nil, nil, nil, keychain_path)
-    # resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
-    FileUtils.cp download_path,options[:output] unless File.exists?(download_path)
+  # begin
+  #   download = open(options[:input])
+  #   filename = download.base_uri.to_s.split('/')[-1]
+  #   # resigned_filename = "resigned_" + download.base_uri.to_s.split('/')[-1] 
+  #   download_path = File.join(tmp_path,filename)
+  #   # resigned_path = File.join(tmp_path,resigned_filename)
+  #   # display_name = resigned_filename.gsub(/.ipa/,'')
+  #   IO.copy_stream(download, download_path)
+  #   resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, nil, nil, nil, nil, nil, keychain_path)
+  #   # resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
+  #   FileUtils.cp download_path,options[:output] unless File.exists?(download_path)
 
-    puts "重签完成 : " + " #{Time.now}"
-    if resign
-    puts "success"
-    else
-    puts "failure"
-    end
-  rescue => exception
-    puts exception
+  #   puts "重签完成 : " + " #{Time.now}"
+  #   if resign
+  #   puts "success"
+  #   else
+  #   puts "failure"
+  #   end
+  # rescue => exception
+  #   puts exception
     resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o "#{options[:output]}" -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
@@ -246,7 +246,7 @@ if options[:input] and options[:output]
     end
     exit
 
-  end
+  # end
 # resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
 # puts resign_cmd
 
