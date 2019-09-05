@@ -102,7 +102,7 @@ puts "解锁钥匙串 : " + timea.inspect
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
-Spaceship.login(options[:username],options[:password])
+spaceship = Spaceship.login(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 tmp_path = File.join(filepath,'tmp')
@@ -124,20 +124,20 @@ if options[:appname] == '' || options[:appname] == nil
     # puts options[:appname]
 end
 
-app = Spaceship::Portal.app.find(options[:bundleid])
+app = spaceship.app.find(options[:bundleid])
 unless app 
 
-    app = Spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
+    app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
     
 end
-app.update_service(Spaceship::Portal.app_service.associated_domains.on)
-app.update_service(Spaceship::Portal.app_service.push_notification.on)
+app.update_service(spaceship.app_service.associated_domains.on)
+app.update_service(spaceship.app_service.push_notification.on)
 
 timec = Time.new
  
 puts "生成APP: " + timec.inspect
 
-device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+device = spaceship.device.find_by_udid(options[:udid], include_disabled: true)
 # puts device
 unless device
     #Register a new device
@@ -145,7 +145,7 @@ unless device
        options[:devicename] = options[:udid]
    end
    begin
-     device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+     device = spaceship.device.create!(name: options[:devicename], udid: options[:udid])
    rescue Exception => exception
      puts exception.message
      puts exception.backtrace.inspect
@@ -157,16 +157,16 @@ device = device.enable!
 timee = Time.new
 
 puts "开始获取证书 : " + timee.inspect
-cert_first= Spaceship.certificate.development.all.first
+cert_first= spaceship.certificate.development.all.first
 if cert_first
     # puts cert
     File.write(cer_path,cert_first.download)
 else
         # Create a new certificate signing request
-    csr, pkey = Spaceship.certificate.create_certificate_signing_request
+    csr, pkey = spaceship.certificate.create_certificate_signing_request
     puts pkey
     # Use the signing request to create a new development certificate
-    cert_first = Spaceship.certificate.development.create!(csr: csr)
+    cert_first = spaceship.certificate.development.create!(csr: csr)
     # cert = Spaceship.certificate.development.all.first
     # puts cert
     File.write(cer_path,cert_first.download)
@@ -176,10 +176,10 @@ end
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 timef = Time.new
 puts "开始获取描述文件 : " + timef.inspect
-cert = Spaceship.certificate.development.all
+cert = spaceship.certificate.development.all
 # puts cert
 profile_name = app.bundle_id + " #{Time.now.to_i}"
-profile_dev = Spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
+profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
         certificate: cert)
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
