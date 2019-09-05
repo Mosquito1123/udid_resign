@@ -228,7 +228,7 @@ if options[:input] and options[:output]
     FileUtils.cp download_path,options[:output] unless File.exists?(download_path)
 
     puts "重签完成 : " + " #{Time.now}"
-    if resign.include? "Successfully"
+    if resign
     puts "success"
     else
     puts "failure"
