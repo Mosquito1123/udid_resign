@@ -221,13 +221,14 @@ if options[:input] and options[:output]
     resigned_filename = "resigned_" + download.base_uri.to_s.split('/')[-1] 
     download_path = File.join(tmp_path,filename)
     resigned_path = File.join(tmp_path,resigned_filename)
+    display_name = resigned_filename.gsub(/.ipa/,'')
     IO.copy_stream(download, download_path)
-    resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, "#{resigned_filename}", nil, nil, nil, nil, keychain_path)
+    resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, "#{display_name}", nil, nil, nil, nil, keychain_path)
     # resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
     FileUtils.cp resigned_path,options[:output] unless File.exists?(resigned_path)
 
     puts "重签完成 : " + " #{Time.now}"
-    if resign.include? "success"
+    if resign.include? "Successfully"
     puts "success"
     else
     puts "failure"
