@@ -54,7 +54,7 @@ option_parser = OptionParser.new do |opts|
     options[:password] = value
   end
   #Force New Certificate
-  options[:force] = true
+  options[:force] = false
   opts.on('-f FORCE','--force Force','Force New Certificate') do |value|
     options[:force] = value
   end
@@ -94,35 +94,35 @@ if options[:output] == '' || options[:output] == nil
     exit
 end
 
-
+UDID = options[:udid]
  
 puts "解锁钥匙串 : " + " #{Time.now}"
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
-spaceship = Spaceship::Launcher.new(options[:username],options[:password])
+user_name = options[:username]
+spaceship = Spaceship::Launcher.new(user_name,options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 
  
 puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
-
+companyname = user_name.split('@').first
+lastname = user_name.split('@').first.reverse!
 if options[:bundleid] == '' || options[:bundleid] == nil
-    companyname = options[:username].split('@').first
-    lastname = options[:username].split('@').first.reverse!
     options[:bundleid] = ['com',companyname,lastname].join('.')
     # puts options[:bundleid]
 end
 if options[:appname] == '' || options[:appname] == nil
-    options[:appname] = options[:username].split('@').first.reverse!
+    options[:appname] = user_name.split('@').first.reverse!
     # puts options[:appname]
 end
-tmp_path = File.join(filepath,options[:udid])
+tmp_path = File.join(filepath,companyname,UDID)
 FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
-cer_path = File.join(filepath,options[:udid],'certificate.cer')
-profile_path = File.join(filepath,options[:udid],'embedded.mobileprovision')
+cer_path = File.join(tmp_path,'certificate.cer')
+profile_path = File.join(tmp_path,'embedded.mobileprovision')
 app = spaceship.app.find(options[:bundleid])
 unless app 
     app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
@@ -133,15 +133,15 @@ app.update_service(Spaceship::Portal.app_service.push_notification.on)
  
 puts "生成APP: " + " #{Time.now}"
 
-device = spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+device = spaceship.device.find_by_udid(UDID, include_disabled: true)
 # puts device
 unless device
     #Register a new device
    unless options[:devicename]
-       options[:devicename] = options[:udid]
+       options[:devicename] = UDID
    end
    begin
-     device = spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+     device = spaceship.device.create!(name: options[:devicename], udid: UDID)
    rescue Exception => exception
      puts exception.message
      puts exception.backtrace.inspect
@@ -152,25 +152,31 @@ device = device.enable!
 
 
 puts "开始获取证书 : " + " #{Time.now}"
-cert_first= spaceship.certificate.development.all.first
-if cert_first
-    # puts cert
-    File.write(cer_path,cert_first.download)
-else
-        # Create a new certificate signing request
-    csr, pkey = spaceship.certificate.create_certificate_signing_request
-    puts pkey
-    # Use the signing request to create a new development certificate
-    cert_first = spaceship.certificate.development.create!(csr: csr)
-    # cert = Spaceship.certificate.development.all.first
-    # puts cert
-    File.write(cer_path,cert_first.download)
+cert = spaceship.certificate.development.all
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
+  
+  cert_first= cert.first
+  if cert_first
+      # puts cert
+      File.write(cer_path,cert_first.download)
+  else
+          # Create a new certificate signing request
+      csr, pkey = spaceship.certificate.create_certificate_signing_request
+      puts pkey
+      # Use the signing request to create a new development certificate
+      cert_first = spaceship.certificate.development.create!(csr: csr)
+      # cert = Spaceship.certificate.development.all.first
+      # puts cert
+      File.write(cer_path,cert_first.download)
+  end
+  
 end
+
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 puts "开始获取描述文件 : " + " #{Time.now}"
-cert = spaceship.certificate.development.all
+
 # puts cert
 profile_name = app.bundle_id + " #{Time.now.to_i}"
 profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
@@ -179,9 +185,10 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 File.write(profile_path, profile_dev.download)
  
 puts "当前时间 : " + " #{Time.now}"
-
-keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
-FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
+  keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
+  FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
+end
 
 # origin fastlane import_certificate
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
