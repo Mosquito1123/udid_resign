@@ -213,8 +213,9 @@ identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
 # puts identity
 codesign_identity = identity.strip
 # profile.download
-
-if options[:input] and options[:output]
+output_path = options[:output]
+input_path = options[:input]
+if input_path and output_path
   # begin
   #   download = open(options[:input])
   #   filename = download.base_uri.to_s.split('/')[-1]
@@ -235,16 +236,22 @@ if options[:input] and options[:output]
   #   end
   # rescue => exception
   #   puts exception
-    resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o "#{options[:output]}" -m #{profile_path}`
+  if File::directory?(output_path)
+    FileUtils.mkdir_p(output_path) unless File.exists?(output_path)
+
+  end
+  
+
+  resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
-    puts "重签完成 : " + " #{Time.now}"
-    if resign.include? "success"
-    puts "success"
-    else
-    puts "failure"
-    end
-    exit
+  puts "重签完成 : " + " #{Time.now}"
+  if resign.include? "success"
+  puts "success"
+  else
+  puts "failure"
+  end
+    
 
   # end
 # resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
