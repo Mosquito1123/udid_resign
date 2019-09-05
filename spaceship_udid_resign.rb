@@ -4,8 +4,7 @@ require 'cert'
 require 'pathname' 
 require 'fastlane_core'
 require 'fileutils'
-require 'sigh'
-require 'open-uri'
+
 
  
 
@@ -235,13 +234,11 @@ if input_path and output_path
   #   end
   # rescue => exception
   #   puts exception
-  if File::directory?(output_path)
-    FileUtils.mkdir_p(output_path) unless File.exists?(output_path)
-  elsif File.file?(output_path)
-    dir = File.dirname(output_path)
-    FileUtils.mkdir_p(dir) unless File.exists?(dir)
+  out_dir = File.dirname(output_path)
+  puts out_dir
+  FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
-  end
+  
   
 
   resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
