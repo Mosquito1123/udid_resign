@@ -222,7 +222,8 @@ if options[:input] and options[:output]
     download_path = File.join(tmp_path,filename)
     resigned_path = File.join(tmp_path,resigned_filename)
     IO.copy_stream(download, download_path)
-    resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
+    resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, "#{resigned_filename}", nil, nil, nil, nil, keychain_path)
+    # resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
     FileUtils.cp resigned_path,options[:output] unless File.exists?(resigned_path)
 
     puts "重签完成 : " + " #{Time.now}"
