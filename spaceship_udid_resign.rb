@@ -102,7 +102,7 @@ puts "解锁钥匙串 : " + timea.inspect
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
-spaceship = Spaceship.login(options[:username],options[:password])
+spaceship = Spaceship::Launcher.new(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 tmp_path = File.join(filepath,'tmp')
