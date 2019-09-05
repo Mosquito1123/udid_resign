@@ -4,6 +4,8 @@ require 'cert'
 require 'pathname' 
 require 'fastlane_core'
 require 'fileutils'
+require 'sigh'
+require 'open-uri'
 
  
 
@@ -185,8 +187,9 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 File.write(profile_path, profile_dev.download)
  
 puts "当前时间 : " + " #{Time.now}"
+keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
+
 if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
-  keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
   FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
 end
 
@@ -212,16 +215,37 @@ codesign_identity = identity.strip
 # profile.download
 
 if options[:input] and options[:output]
-# resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
-# puts resign_cmd
-resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
+  begin
+    download = open(options[:input])
+    filename = download.base_uri.to_s.split('/')[-1]
+    resigned_filename = "resigned_" + download.base_uri.to_s.split('/')[-1] 
+    download_path = File.join(tmp_path,filename)
+    resigned_path = File.join(tmp_path,resigned_filename)
+    IO.copy_stream(download, download_path)
+    resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
+    FileUtils.cp resigned_path,options[:output] unless File.exists?(resigned_path)
+
+    puts "重签完成 : " + " #{Time.now}"
+    if resign.include? "success"
+    puts "success"
+    else
+    puts "failure"
+    end
+  rescue => exception
+    puts exception
+    resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
-puts "重签完成 : " + " #{Time.now}"
-if resign.include? "success"
-  puts "success"
-else
-  puts "failure"
-end
+    puts "重签完成 : " + " #{Time.now}"
+    if resign.include? "success"
+    puts "success"
+    else
+    puts "failure"
+    end
+
+  end
+# resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
+# puts resign_cmd
+
 
 end
