@@ -186,7 +186,6 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
-puts "当前时间 : " + " #{Time.now}"
 keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
 
 if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
@@ -238,6 +237,9 @@ if input_path and output_path
   #   puts exception
   if File::directory?(output_path)
     FileUtils.mkdir_p(output_path) unless File.exists?(output_path)
+  elsif File.file?(output_path)
+    dir = ile.dirname(output_path)
+    FileUtils.mkdir_p(dir) unless File.exists?(dir)
 
   end
   
