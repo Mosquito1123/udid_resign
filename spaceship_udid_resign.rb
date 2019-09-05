@@ -96,7 +96,7 @@ end
 
 
  
-puts "解锁钥匙串 : " + " #{Time.now.to_i}"
+puts "解锁钥匙串 : " + " #{Time.now}"
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
@@ -105,7 +105,7 @@ filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 
  
-puts "开始生成创建APP : " + " #{Time.now.to_i}"
+puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
 companyname = options[:username].split('@').first
 
@@ -118,7 +118,7 @@ if options[:appname] == '' || options[:appname] == nil
     options[:appname] = options[:username].split('@').first.reverse!
     # puts options[:appname]
 end
-tmp_path = File.join(filepath,companyname)
+tmp_path = File.join(filepath,options[:udid])
 FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
 cer_path = File.join(filepath,companyname,'certificate.cer')
@@ -133,7 +133,7 @@ app.update_service(Spaceship::Portal.app_service.associated_domains.on)
 app.update_service(Spaceship::Portal.app_service.push_notification.on)
 
  
-puts "生成APP: " + " #{Time.now.to_i}"
+puts "生成APP: " + " #{Time.now}"
 
 device = spaceship.device.find_by_udid(options[:udid], include_disabled: true)
 # puts device
@@ -153,7 +153,7 @@ end
 device = device.enable!
 
 
-puts "开始获取证书 : " + " #{Time.now.to_i}"
+puts "开始获取证书 : " + " #{Time.now}"
 cert_first= spaceship.certificate.development.all.first
 if cert_first
     # puts cert
@@ -171,7 +171,7 @@ end
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
-puts "开始获取描述文件 : " + " #{Time.now.to_i}"
+puts "开始获取描述文件 : " + " #{Time.now}"
 cert = spaceship.certificate.development.all
 # puts cert
 profile_name = app.bundle_id + " #{Time.now.to_i}"
@@ -180,7 +180,7 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
-puts "当前时间 : " + " #{Time.now.to_i}"
+puts "当前时间 : " + " #{Time.now}"
 
 keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
 FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
@@ -189,7 +189,7 @@ FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_pas
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
  
-puts "开始重签 : " + " #{Time.now.to_i}"
+puts "开始重签 : " + " #{Time.now}"
 # pem_path = File.join(filepath,companyname,'certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
@@ -209,8 +209,8 @@ if options[:input] and options[:output]
 # puts resign_cmd
 resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 # puts resign
-# " #{Time.now.to_i}" 功能相同
-puts "重签完成 : " + " #{Time.now.to_i}"
+# " #{Time.now}" 功能相同
+puts "重签完成 : " + " #{Time.now}"
 if resign.include? "success"
   puts "success"
 else
