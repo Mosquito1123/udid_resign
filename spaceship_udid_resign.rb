@@ -178,7 +178,7 @@ end
 puts "开始获取描述文件 : " + " #{Time.now}"
 
 # puts cert
-profile_name = app.bundle_id + " #{Time.now.to_i}"
+profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
 profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
         certificate: cert)
 # puts profile_dev
