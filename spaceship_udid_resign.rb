@@ -238,7 +238,7 @@ if input_path and output_path
   if File::directory?(output_path)
     FileUtils.mkdir_p(output_path) unless File.exists?(output_path)
   elsif File.file?(output_path)
-    dir = ile.dirname(output_path)
+    dir = File.dirname(output_path)
     FileUtils.mkdir_p(dir) unless File.exists?(dir)
 
   end
