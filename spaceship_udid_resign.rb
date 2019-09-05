@@ -121,8 +121,8 @@ end
 tmp_path = File.join(filepath,options[:udid])
 FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
-cer_path = File.join(filepath,companyname,'certificate.cer')
-profile_path = File.join(filepath,companyname,'embedded.mobileprovision')
+cer_path = File.join(filepath,options[:udid],'certificate.cer')
+profile_path = File.join(filepath,options[:udid],'embedded.mobileprovision')
 app = spaceship.app.find(options[:bundleid])
 unless app 
 
