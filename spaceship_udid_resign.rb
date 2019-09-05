@@ -127,9 +127,10 @@ profile_path = File.join(tmp_path,'embedded.mobileprovision')
 app = spaceship.app.find(options[:bundleid])
 unless app 
     app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
+    app.update_service(Spaceship::Portal.app_service.associated_domains.on)
+    app.update_service(Spaceship::Portal.app_service.push_notification.on)
 end
-app.update_service(Spaceship::Portal.app_service.associated_domains.on)
-app.update_service(Spaceship::Portal.app_service.push_notification.on)
+
 
  
 puts "生成APP: " + " #{Time.now}"
@@ -235,7 +236,7 @@ if input_path and output_path
   # rescue => exception
   #   puts exception
   out_dir = File.dirname(output_path)
-  puts out_dir
+  # puts out_dir
   FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
   
