@@ -3,10 +3,8 @@ require 'optparse'
 require 'cert'
 require 'pathname' 
 require 'fastlane_core'
+require 'fileutils'
 
-time1 = Time.new
- 
-puts "当前时间 : " + time1.inspect
  
 
 options = {}
@@ -96,25 +94,22 @@ if options[:output] == '' || options[:output] == nil
     exit
 end
 
-timea = Time.new
+
  
-puts "解锁钥匙串 : " + timea.inspect
+puts "解锁钥匙串 : " + Time.now
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
 spaceship = Spaceship::Launcher.new(options[:username],options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
-tmp_path = File.join(filepath,'tmp')
-cer_path = File.join(filepath,'tmp','certificate.cer')
-profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
-timeb = Time.new
+
  
-puts "开始生成创建APP : " + timeb.inspect
+puts "开始生成创建APP : " + Time.now
 # Create a new app
+companyname = options[:username].split('@').first
 
 if options[:bundleid] == '' || options[:bundleid] == nil
-    companyname = options[:username].split('@').first
     lastname = options[:username].split('@').first.reverse!
     options[:bundleid] = ['com',companyname,lastname].join('.')
     # puts options[:bundleid]
@@ -123,7 +118,11 @@ if options[:appname] == '' || options[:appname] == nil
     options[:appname] = options[:username].split('@').first.reverse!
     # puts options[:appname]
 end
+tmp_path = File.join(filepath,companyname)
+FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
+cer_path = File.join(filepath,companyname,'certificate.cer')
+profile_path = File.join(filepath,companyname,'embedded.mobileprovision')
 app = spaceship.app.find(options[:bundleid])
 unless app 
 
@@ -133,9 +132,8 @@ end
 app.update_service(Spaceship::Portal.app_service.associated_domains.on)
 app.update_service(Spaceship::Portal.app_service.push_notification.on)
 
-timec = Time.new
  
-puts "生成APP: " + timec.inspect
+puts "生成APP: " + Time.now
 
 device = spaceship.device.find_by_udid(options[:udid], include_disabled: true)
 # puts device
@@ -154,9 +152,8 @@ unless device
 end
 device = device.enable!
 
-timee = Time.new
 
-puts "开始获取证书 : " + timee.inspect
+puts "开始获取证书 : " + Time.now
 cert_first= spaceship.certificate.development.all.first
 if cert_first
     # puts cert
@@ -174,8 +171,7 @@ end
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
-timef = Time.new
-puts "开始获取描述文件 : " + timef.inspect
+puts "开始获取描述文件 : " + Time.now
 cert = spaceship.certificate.development.all
 # puts cert
 profile_name = app.bundle_id + " #{Time.now.to_i}"
@@ -183,9 +179,8 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
         certificate: cert)
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
-timeg = Time.new
  
-puts "当前时间 : " + timeg.inspect
+puts "当前时间 : " + Time.now
 
 keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
 FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
@@ -193,10 +188,9 @@ FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_pas
 # origin fastlane import_certificate
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
-timeh = Time.new
  
-puts "开始重签 : " + timeh.inspect
-# pem_path = File.join(filepath,'tmp','certificate.pem')
+puts "开始重签 : " + Time.now
+# pem_path = File.join(filepath,companyname,'certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
 
@@ -216,8 +210,7 @@ if options[:input] and options[:output]
 resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 # puts resign
 # Time.now 功能相同
-time2 = Time.now
-puts "重签完成 : " + time2.inspect
+puts "重签完成 : " + Time.now
 if resign.include? "success"
   puts "success"
 else
