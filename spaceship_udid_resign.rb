@@ -107,9 +107,9 @@ filepath = Pathname.new(File.dirname(__FILE__)).realpath
  
 puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
-companyname = options[:username].split('@').first
 
 if options[:bundleid] == '' || options[:bundleid] == nil
+    companyname = options[:username].split('@').first
     lastname = options[:username].split('@').first.reverse!
     options[:bundleid] = ['com',companyname,lastname].join('.')
     # puts options[:bundleid]
@@ -125,9 +125,7 @@ cer_path = File.join(filepath,options[:udid],'certificate.cer')
 profile_path = File.join(filepath,options[:udid],'embedded.mobileprovision')
 app = spaceship.app.find(options[:bundleid])
 unless app 
-
     app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
-    
 end
 app.update_service(Spaceship::Portal.app_service.associated_domains.on)
 app.update_service(Spaceship::Portal.app_service.push_notification.on)
@@ -193,8 +191,9 @@ puts "开始重签 : " + " #{Time.now}"
 # pem_path = File.join(filepath,companyname,'certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
-FileUtils.cp resign_file_path,tmp_path
 tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
+
+FileUtils.cp resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
 # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
