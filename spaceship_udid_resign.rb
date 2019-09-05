@@ -193,7 +193,8 @@ puts "开始重签 : " + " #{Time.now}"
 # pem_path = File.join(filepath,companyname,'certificate.pem')
 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
-
+FileUtils.cp resign_file_path,tmp_path
+tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
 # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
@@ -207,7 +208,7 @@ codesign_identity = identity.strip
 if options[:input] and options[:output]
 # resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
 # puts resign_cmd
-resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
+resign = `python #{tmp_resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
 puts "重签完成 : " + " #{Time.now}"
