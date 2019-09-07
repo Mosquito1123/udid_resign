@@ -14,6 +14,8 @@ import time
 
 
 
+print('构造全局参数')
+
 glt_version = '0.0.1'
 ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
 
