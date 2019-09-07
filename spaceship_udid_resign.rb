@@ -220,6 +220,7 @@ codesign_identity = identity.strip
 # profile.download
 output_path = options[:output]
 input_path = options[:input]
+puts "输入#{input_path}"
 if input_path and output_path
   # begin
   #   download = open(options[:input])
