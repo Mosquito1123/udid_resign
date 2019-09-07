@@ -523,16 +523,14 @@ if __name__ == "__main__":
 
 
         print('远程拉取ipa：%s %s' % (ran_str,get_time()))
+        glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
 
         if re.match(r'^https?:/{2}\w.+$', source):
             # print('web')
-
-            glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
             # print('wt_input路径：%s' % glt_source)
             glt_handle_web_source(source)
         else:
             # print("local")
-            glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
             resultPath, _ = os.path.split(glt_source)
             print('+++++++%s' % resultPath)
             if os.path.exists(source):
