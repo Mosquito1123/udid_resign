@@ -11,7 +11,9 @@ import re
 import random
 import string
 import time
-import pysnooper
+import pycurl
+import StringIO
+
 
 print('构造全局参数')
 
@@ -32,13 +34,13 @@ glt_name = ''
 glt_bundleid = ''
 glt_encrypt = ''
 
-@pysnooper.snoop()
+
 def get_time():
     now = int(round(time.time()*1000))
     now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
     return '%s' % now02
 
-@pysnooper.snoop()
+
 def glt_print_help():
     source = '\n重签名需要传入的参数:\n-i, --input\t源App/ipa的路径（必传）\n'
     devloper = '-d, --developer\t证书签名id（必传）\n'
@@ -60,41 +62,63 @@ def glt_print_help():
     printInfo = printInfo.expandtabs(26)
     print(printInfo)
 
-@pysnooper.snoop()
+
 def glt_exit():
     sys.exit()
 
-@pysnooper.snoop()
+
 def glt_handle_argExcept():
     glt_print_help()
     glt_exit()
 
-@pysnooper.snoop()
+
 def glt_cmd(cmd):
     process = os.popen(cmd,'r')
     output = process.read()
     process.close()
     return output
 
-@pysnooper.snoop()
+
 def glt_handle_web_source(source):
     # print("downloading with %s" % source)
-    url = source
-    f = urllib2.urlopen(url)
-    data = f.read()
-    path = os.path.join(os.path.dirname(__file__),url.split('/')[-1])
-    # print('下载文件路径：%s' % path)
+    path = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
+    ##### init the env ###########
+    c = pycurl.Curl()
+    c.setopt(pycurl.COOKIEFILE, "cookie_file_name")#把cookie保存在该文件中
+    c.setopt(pycurl.COOKIEJAR, "cookie_file_name")
+    c.setopt(pycurl.FOLLOWLOCATION, 1) #允许跟踪来源
+    c.setopt(pycurl.MAXREDIRS, 5)
+    #设置代理 如果有需要请去掉注释，并设置合适的参数
+    #c.setopt(pycurl.PROXY, 'http://11.11.11.11:8080')
+    #c.setopt(pycurl.PROXYUSERPWD, 'aaa:aaa')
+    ########### get the data && save to file ###########
+    # head = ['Accept:*/*','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0']
+    buf = StringIO.StringIO()
+    c.setopt(pycurl.WRITEFUNCTION, buf.write)
+    c.setopt(pycurl.URL, source)
+    # curl.setopt(pycurl.HTTPHEADER,  head)
+    c.perform()
+    the_page =buf.getvalue()
+    buf.close()
+    f = open(path, 'wb')
+    f.write(the_page)
+    f.close()
+    # url = source
+    # f = urllib2.urlopen(url)
+    # data = f.read()
+    # path = os.path.join(os.path.dirname(__file__),url.split('/')[-1])
+    # # print('下载文件路径：%s' % path)
 
-    with open(path, "wb+") as code:
-        code.write(data)
-        code.close()
+    # with open(path, "wb+") as code:
+    #     code.write(data)
+    #     code.close()
 
-@pysnooper.snoop()
+
 def glt_handleWhiteSpace(name):
     space = name.lstrip().rstrip()
     return space.replace('\n', '')
 
-@pysnooper.snoop()
+
 def glt_parser_args(argv):
     if len(argv) == 1:
         glt_handle_argExcept()
@@ -142,7 +166,7 @@ def glt_parser_args(argv):
             glt_handle_argExcept()
     return source, name, bundleid, developer, mobile, output, codesignID, encrypt, version
 
-@pysnooper.snoop()
+
 def glt_userChooseIsDelete(filePath):
     if os.path.exists(glt_tmp):
         shutil.rmtree(glt_tmp)
@@ -158,7 +182,7 @@ def glt_userChooseIsDelete(filePath):
         #         glt_exit()
     os.mkdir(glt_tmp)
 
-@pysnooper.snoop()
+
 def glt_zip(source_dir, output_filename):
     zipf = zipfile.ZipFile(output_filename, 'w')
     pre_len = len(os.path.dirname(source_dir))
@@ -169,13 +193,13 @@ def glt_zip(source_dir, output_filename):
             zipf.write(pathfile, arcname)
     zipf.close()
 
-@pysnooper.snoop()
+
 def glt_unzipFile(sourceFile, outputPath):
     zipObj = zipfile.ZipFile(sourceFile, 'r')
     zipObj.extractall(outputPath)
     zipObj.close()
 
-@pysnooper.snoop()
+
 def glt_handle_source(source):
     global glt_tmp
     global glt_tmpAppPath
@@ -202,7 +226,7 @@ def glt_handle_source(source):
     else:
         glt_handle_argExcept()
 
-@pysnooper.snoop()
+
 def glt_configAppToIpa():
     resultPath, fileName = os.path.split(glt_exportPath)
     sourcePath, sourceName = os.path.split(glt_source)
@@ -220,12 +244,12 @@ def glt_configAppToIpa():
         shutil.rmtree(glt_tmp)
    
 
-@pysnooper.snoop()
+
 def glt_remove_glt_tmp_path():
     if os.path.exists(os.path.join(os.path.dirname(__file__),ran_str)):
         shutil.rmtree(glt_tmp)
 
-@pysnooper.snoop()
+
 def glt_configIpaToIpa():
     resultPath, fileName = os.path.split(glt_exportPath)
     if os.path.exists(resultPath) == False:
@@ -234,7 +258,7 @@ def glt_configIpaToIpa():
     glt_remove_glt_tmp_path()
     
 
-@pysnooper.snoop()
+
 def glt_readToFile(handleLineFuncName):
     contentFile = open(glt_frameworksFile)
     line = contentFile.readline()
@@ -246,7 +270,7 @@ def glt_readToFile(handleLineFuncName):
     if os.path.exists(glt_frameworksFile):
         os.remove(glt_frameworksFile)
 
-@pysnooper.snoop()
+
 def glt_writeToFile(content):
     if os.path.exists(glt_frameworksFile):
         os.remove(glt_frameworksFile)
@@ -254,12 +278,12 @@ def glt_writeToFile(content):
     result = glt_file.write(content)
     glt_file.close()
 
-@pysnooper.snoop()
+
 def glt_resignappWithPath(filePath):
     sys_cmd = 'codesign -f -s "%s" --entitlements %s "%s"' % (glt_developerCodeSign, glt_entitlePlist, filePath)
     glt_cmd(sys_cmd)
 
-@pysnooper.snoop()
+
 def glt_handle_resignFiles():
     findCondition = '\\( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.dylib" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
@@ -267,12 +291,12 @@ def glt_handle_resignFiles():
     glt_writeToFile(result)
     glt_readToFile(glt_resignappWithPath)
 
-@pysnooper.snoop()
+
 def glt_readToFile_delete_Watch_PlugIns(filePath):
     if os.path.exists(filePath):
         shutil.rmtree(filePath)
 
-@pysnooper.snoop()
+
 def glt_delete_Watch_PlugIns():
     findCondition = '\\( -name "Watch" -o -name "PlugIns" \\)'
     cmd = 'find -d "%s" %s' % (glt_tmpAppPath, findCondition)
@@ -280,12 +304,12 @@ def glt_delete_Watch_PlugIns():
     glt_writeToFile(result)
     glt_readToFile(glt_readToFile_delete_Watch_PlugIns)
 
-@pysnooper.snoop()
+
 def glt_begain_resign():
     # print('\n正在开始签名...')
     shutil.copy(glt_mobile, glt_tmpAppPath)
 
-@pysnooper.snoop()
+
 def glt_supportdevices_count():
     cmd = '/usr/libexec/PlistBuddy -x -c "Print:ProvisionedDevices" %s | grep "string" > %s' % (
         glt_tmpPlist, glt_devicesTxt)
@@ -302,7 +326,7 @@ def glt_supportdevices_count():
         os.remove(glt_devicesTxt)
     # print('\n支持的设备数：%d台' % count)
 
-@pysnooper.snoop()
+
 def glt_export_signInfo(embeddedMobileprovision):
     cmd = 'security cms -D -i %s > %s' % (embeddedMobileprovision, glt_tmpPlist)
     os.system(cmd)
@@ -311,7 +335,7 @@ def glt_export_signInfo(embeddedMobileprovision):
     glt_begain_resign()
     glt_supportdevices_count()
 
-@pysnooper.snoop()
+
 def glt_configDisplayName(filePath):
     printcmd = '/usr/libexec/PlistBuddy -x -c "Print :CFBundleDisplayName" %s >/dev/null 2>&1' % filePath
     result = os.system(printcmd)
@@ -327,43 +351,43 @@ def glt_configDisplayName(filePath):
                 glt_name, filePath)
             glt_cmd(cmd)
 
-@pysnooper.snoop()
+
 def glt_updateNameWithPath(filePath):
     glt_configDisplayName(filePath)
 
-@pysnooper.snoop()
+
 def glt_updateNameWithInfoPlistPath(filePath):
     if filePath.endswith('.app/Info.plist'):
         glt_configDisplayName(filePath)
 
-@pysnooper.snoop()
+
 def glt_findInfoPlist():
     findCondition = '\\( -name "Info.plist" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
     result = glt_cmd(cmd)
     glt_writeToFile(result)
 
-@pysnooper.snoop()
+
 def glt_findInfoPlistStrings():
     findCondition = '\\( -name "InfoPlist.strings" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
     result = glt_cmd(cmd)
     glt_writeToFile(result)
 
-@pysnooper.snoop()
+
 def glt_handle_app_names():
     glt_findInfoPlistStrings()
     glt_readToFile(glt_updateNameWithPath)
     glt_findInfoPlist()
     glt_readToFile(glt_updateNameWithInfoPlistPath)
 
-@pysnooper.snoop()
+
 def glt_updateBundleIDWithInfoPlistPath(filePath):
     if filePath.endswith('.app/Info.plist'):
         cmd = '/usr/libexec/PlistBuddy -x -c "Set :CFBundleIdentifier %s" %s' % (glt_bundleid, filePath)
         glt_cmd(cmd)
 
-@pysnooper.snoop()
+
 def glt_handle_bundleid_infoplist():
     findCondition = '\\( -name "Info.plist" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
@@ -371,7 +395,7 @@ def glt_handle_bundleid_infoplist():
     glt_writeToFile(result)
     glt_readToFile(glt_updateBundleIDWithInfoPlistPath)
 
-@pysnooper.snoop()
+
 def glt_judge_isEncrypt(filePath):
     if filePath.endswith('.app/Info.plist'):
         printcmd = '/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" %s ' % filePath
@@ -394,12 +418,12 @@ def glt_judge_isEncrypt(filePath):
             if glt_encrypt != '':
                 glt_remove_glt_tmp_path()
 
-@pysnooper.snoop()
+
 def glt_handle_encrypt():
     glt_findInfoPlist()
     glt_readToFile(glt_judge_isEncrypt)
 
-@pysnooper.snoop()
+
 def glt_handle_developer():
     glt_delete_Watch_PlugIns()
 
@@ -423,7 +447,7 @@ def glt_handle_developer():
     else:
         glt_configAppToIpa()
 
-@pysnooper.snoop()
+
 def glt_handle_outputName():
     global glt_exportPath
     if glt_exportPath == '':
@@ -431,7 +455,7 @@ def glt_handle_outputName():
     if glt_exportPath.endswith(".ipa") == False:
         glt_exportPath = "%s/glt_output.ipa" % glt_exportPath
 
-@pysnooper.snoop()
+
 def glt_valid_ipa():
     cp_file = 'cp %s %s' % (glt_exportPath,glt_source)
     print(glt_cmd(cp_file))
@@ -464,7 +488,7 @@ def glt_valid_ipa():
         print(glt_cmd('openssl smime -inform der -verify -noverify -in "%s"' % mobileprovision))
         return False
             
-@pysnooper.snoop()
+
 def glt_remove_local():
     if os.path.exists(glt_source):
             os.remove(glt_source)
