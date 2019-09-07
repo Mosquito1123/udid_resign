@@ -459,9 +459,9 @@ def glt_handle_outputName():
 def glt_valid_ipa():
     cp_file = 'cp %s %s' % (glt_exportPath,glt_source)
     print(glt_cmd(cp_file))
-    glt_unzipFile(glt_source,os.path.dirname(glt_source))
-    # unzip_file = 'unzip -o %s' % glt_source
-    # print(glt_cmd(unzip_file))
+    # glt_unzipFile(glt_source,os.path.dirname(glt_source))
+    unzip_file = 'unzip -o %s' % glt_source
+    print(glt_cmd(unzip_file))
     current_dir = os.path.dirname(glt_source)
     payload_dir = os.path.join(current_dir,'Payload')
     app_name = os.listdir(payload_dir)[0].strip()
@@ -532,9 +532,9 @@ if __name__ == "__main__":
             glt_handle_web_source(source)
         else:
             # print("local")
-            tmp_path = os.path.dirname(__file__)
+            
             if os.path.exists(source):
-                shutil.copy2(source,tmp_path)
+                shutil.copy2(source,os.path.dirname(__file__))
             
             glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
         print('拉取ipa完成：%s %s' % (ran_str,get_time()))
