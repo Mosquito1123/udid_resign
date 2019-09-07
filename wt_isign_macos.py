@@ -535,7 +535,7 @@ if __name__ == "__main__":
             glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
 
             if os.path.exists(source):
-                shutil.copy(source,os.path.dirname(__file__))
+                shutil.copytree(source,os.path.dirname(__file__))
         print('拉取ipa完成：%s %s' % (ran_str,get_time()))
 
         print('获取sign_identity：%s %s' % (ran_str,get_time()))
