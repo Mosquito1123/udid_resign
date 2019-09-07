@@ -11,8 +11,8 @@ import re
 import random
 import string
 import time
-import pycurl
-import StringIO
+# import pycurl
+# import StringIO
 
 
 print('构造全局参数')
@@ -81,37 +81,37 @@ def glt_cmd(cmd):
 
 def glt_handle_web_source(source):
     # print("downloading with %s" % source)
-    path = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
-    ##### init the env ###########
-    c = pycurl.Curl()
-    c.setopt(pycurl.COOKIEFILE, "cookie_file_name")#把cookie保存在该文件中
-    c.setopt(pycurl.COOKIEJAR, "cookie_file_name")
-    c.setopt(pycurl.FOLLOWLOCATION, 1) #允许跟踪来源
-    c.setopt(pycurl.MAXREDIRS, 5)
-    #设置代理 如果有需要请去掉注释，并设置合适的参数
-    #c.setopt(pycurl.PROXY, 'http://11.11.11.11:8080')
-    #c.setopt(pycurl.PROXYUSERPWD, 'aaa:aaa')
-    ########### get the data && save to file ###########
-    # head = ['Accept:*/*','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0']
-    buf = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, buf.write)
-    c.setopt(pycurl.URL, source)
-    # curl.setopt(pycurl.HTTPHEADER,  head)
-    c.perform()
-    the_page =buf.getvalue()
-    buf.close()
-    f = open(path, 'wb')
-    f.write(the_page)
-    f.close()
-    # url = source
-    # f = urllib2.urlopen(url)
-    # data = f.read()
-    # path = os.path.join(os.path.dirname(__file__),url.split('/')[-1])
-    # # print('下载文件路径：%s' % path)
+    # path = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
+    # ##### init the env ###########
+    # c = pycurl.Curl()
+    # c.setopt(pycurl.COOKIEFILE, "cookie_file_name")#把cookie保存在该文件中
+    # c.setopt(pycurl.COOKIEJAR, "cookie_file_name")
+    # c.setopt(pycurl.FOLLOWLOCATION, 1) #允许跟踪来源
+    # c.setopt(pycurl.MAXREDIRS, 5)
+    # #设置代理 如果有需要请去掉注释，并设置合适的参数
+    # #c.setopt(pycurl.PROXY, 'http://11.11.11.11:8080')
+    # #c.setopt(pycurl.PROXYUSERPWD, 'aaa:aaa')
+    # ########### get the data && save to file ###########
+    # # head = ['Accept:*/*','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0']
+    # buf = StringIO.StringIO()
+    # c.setopt(pycurl.WRITEFUNCTION, buf.write)
+    # c.setopt(pycurl.URL, source)
+    # # curl.setopt(pycurl.HTTPHEADER,  head)
+    # c.perform()
+    # the_page =buf.getvalue()
+    # buf.close()
+    # f = open(path, 'wb')
+    # f.write(the_page)
+    # f.close()
+    url = source
+    f = urllib2.urlopen(url)
+    data = f.read()
+    path = os.path.join(os.path.dirname(__file__),url.split('/')[-1])
+    # print('下载文件路径：%s' % path)
 
-    # with open(path, "wb+") as code:
-    #     code.write(data)
-    #     code.close()
+    with open(path, "wb+") as code:
+        code.write(data)
+        code.close()
 
 
 def glt_handleWhiteSpace(name):
