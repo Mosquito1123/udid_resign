@@ -199,11 +199,14 @@ end
 
 # pem_path = File.join(filepath,companyname,'certificate.pem')
 puts "复制mobileprovision到对应文件夹 : " + " #{Time.now}"
- 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
-tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
 
-FileUtils.cp resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
+`python -m py_compile #{resign_file_path}`
+compiled_resign_file_path = File.join(filepath,'wt_isign_macos.pyc')
+
+tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.pyc')
+
+FileUtils.cp compiled_resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
 # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
 puts "获取mobileprovision里面的sign_identity : " + " #{Time.now}"
@@ -244,8 +247,7 @@ if input_path and output_path
   FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
   puts "开始重签 : " + " #{Time.now}"
-  begin
-    t = Thread.new do
+ 
       resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
       # puts resign
       # " #{Time.now}" 功能相同
@@ -255,11 +257,7 @@ if input_path and output_path
       else
       puts "failure"
       end
-    end
-    t.join
-  rescue
-    p $!  # => "unhandled exception"
-  end
+ 
 
   
     
