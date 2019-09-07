@@ -532,11 +532,10 @@ if __name__ == "__main__":
             glt_handle_web_source(source)
         else:
             # print("local")
-            
-            # if os.path.exists(source):
-            #     shutil.copy2(source,os.path.dirname(__file__))
-            print('文件路径：+++++++++=%s' % source)
-            glt_source = source
+            glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
+
+            if os.path.exists(source):
+                shutil.copy(source,glt_source)
         print('拉取ipa完成：%s %s' % (ran_str,get_time()))
 
         print('获取sign_identity：%s %s' % (ran_str,get_time()))
