@@ -468,6 +468,7 @@ if __name__ == "__main__":
   
 
 		
+    print('进入重签脚本并拉取参数：%s %s' % (ran_str,get_time()))
 
     source, name, bundleid, developer, mobile, output, codesignID, encrypt, version = glt_parser_args(sys.argv)
 
