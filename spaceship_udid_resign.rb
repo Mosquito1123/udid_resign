@@ -245,7 +245,7 @@ if input_path and output_path
 
   puts "开始重签 : " + " #{Time.now}"
   begin
-    Thread.new do
+    t = Thread.new do
       resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
       # puts resign
       # " #{Time.now}" 功能相同
@@ -256,7 +256,7 @@ if input_path and output_path
       puts "failure"
       end
     end
-    # t.join
+    t.join
   rescue
     p $!  # => "unhandled exception"
   end
