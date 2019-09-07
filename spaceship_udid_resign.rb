@@ -196,15 +196,18 @@ end
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
  
-puts "开始重签 : " + " #{Time.now}"
-# pem_path = File.join(filepath,companyname,'certificate.pem')
 
+# pem_path = File.join(filepath,companyname,'certificate.pem')
+puts "复制mobileprovision到对应文件夹 : " + " #{Time.now}"
+ 
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
 tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
 
 FileUtils.cp resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
 # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
+puts "获取mobileprovision里面的sign_identity : " + " #{Time.now}"
+
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
 # puts get_cer_subject_mobileprovision
 sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
@@ -235,13 +238,12 @@ if input_path and output_path
   #   end
   # rescue => exception
   #   puts exception
+  puts "创建输出目录 : " + " #{Time.now}"
   out_dir = File.dirname(output_path)
   # puts out_dir
   FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
-  
-  
-
+  puts "开始重签 : " + " #{Time.now}"
   resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
 # puts resign
 # " #{Time.now}" 功能相同
