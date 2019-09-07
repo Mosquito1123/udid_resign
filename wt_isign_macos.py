@@ -10,6 +10,9 @@ import urlparse
 import re
 import random
 import string
+import time
+
+
 
 glt_version = '0.0.1'
 ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
@@ -28,6 +31,10 @@ glt_name = ''
 glt_bundleid = ''
 glt_encrypt = ''
 
+def get_time():
+    now = int(round(time.time()*1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+    return '%s' % now02
 
 def glt_print_help():
     source = '\n重签名需要传入的参数:\n-i, --input\t源App/ipa的路径（必传）\n'
@@ -484,7 +491,7 @@ if __name__ == "__main__":
             glt_exportPath = output
 
 
-
+        print('远程拉取ipa：%s %s' % (ran_str,get_time()))
 
         if re.match(r'^https?:/{2}\w.+$', source):
             # print('web')
@@ -495,13 +502,30 @@ if __name__ == "__main__":
         else:
             # print("local")
             glt_source = source
+        print('拉取ipa完成：%s %s' % (ran_str,get_time()))
+
+        print('获取sign_identity：%s %s' % (ran_str,get_time()))
+
         glt_developerCodeSign = developer
+        print('获取mobileprovison：%s %s' % (ran_str,get_time()))
+
         glt_mobile = mobile
+        
+
+        print('解压ipa：%s %s' % (ran_str,get_time()))
 
         glt_handle_source(glt_source)
+        print('获取重签entitlements：%s %s' % (ran_str,get_time()))
+
         glt_export_signInfo(glt_mobile)
+        print('重签并输出ipa：%s %s' % (ran_str,get_time()))
+
         glt_handle_outputName()
+        print('修改ipa信息：%s %s' % (ran_str,get_time()))
+
         glt_handle_developer()
+        print('移除本地缓存：%s %s' % (ran_str,get_time()))
+
         glt_remove_local()
 
         # if glt_valid_ipa() == True:
