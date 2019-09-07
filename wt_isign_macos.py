@@ -524,14 +524,14 @@ if __name__ == "__main__":
 
         print('远程拉取ipa：%s %s' % (ran_str,get_time()))
         glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
-
+        
         if re.match(r'^https?:/{2}\w.+$', source):
             # print('web')
             # print('wt_input路径：%s' % glt_source)
             glt_handle_web_source(source)
         else:
             # print("local")
-            resultPath, _ = os.path.split(glt_source)
+            resultPath = os.path.dirname(__file__)
             print('+++++++%s' % resultPath)
             if os.path.exists(source):
                 shutil.copy(source,resultPath)
@@ -540,7 +540,7 @@ if __name__ == "__main__":
         print('获取sign_identity：%s %s' % (ran_str,get_time()))
 
         glt_developerCodeSign = developer
-        print('获取mobileprovison：%s %s' % (ran_str,get_time()))
+        print('获取 mobileprovison：%s %s' % (ran_str,get_time()))
 
         glt_mobile = mobile
         
