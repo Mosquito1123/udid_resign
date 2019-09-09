@@ -8,9 +8,19 @@ import time
 import zipfile
 import urlparse
 import re
+import random
+import string
+import time
+# import pycurl
+# import StringIO
+
+
+print('构造全局参数')
 
 glt_version = '0.0.1'
-glt_tmp = os.path.join(os.path.dirname(__file__),'glt_tmp')
+ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+
+glt_tmp = os.path.join(os.path.dirname(__file__),ran_str)
 glt_tmpAppPath = '%s/glt_tmp.app' % glt_tmp
 glt_frameworksFile = '%s/glt_frameworks.txt' % glt_tmp
 glt_tmpPlist = '%s/entitlements_tmp.plist' % glt_tmp
@@ -23,6 +33,12 @@ glt_source = ''
 glt_name = ''
 glt_bundleid = ''
 glt_encrypt = ''
+
+
+def get_time():
+    now = int(round(time.time()*1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+    return '%s' % now02
 
 
 def glt_print_help():
@@ -62,8 +78,31 @@ def glt_cmd(cmd):
     process.close()
     return output
 
+
 def glt_handle_web_source(source):
     # print("downloading with %s" % source)
+    # path = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
+    # ##### init the env ###########
+    # c = pycurl.Curl()
+    # c.setopt(pycurl.COOKIEFILE, "cookie_file_name")#把cookie保存在该文件中
+    # c.setopt(pycurl.COOKIEJAR, "cookie_file_name")
+    # c.setopt(pycurl.FOLLOWLOCATION, 1) #允许跟踪来源
+    # c.setopt(pycurl.MAXREDIRS, 5)
+    # #设置代理 如果有需要请去掉注释，并设置合适的参数
+    # #c.setopt(pycurl.PROXY, 'http://11.11.11.11:8080')
+    # #c.setopt(pycurl.PROXYUSERPWD, 'aaa:aaa')
+    # ########### get the data && save to file ###########
+    # # head = ['Accept:*/*','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0']
+    # buf = StringIO.StringIO()
+    # c.setopt(pycurl.WRITEFUNCTION, buf.write)
+    # c.setopt(pycurl.URL, source)
+    # # curl.setopt(pycurl.HTTPHEADER,  head)
+    # c.perform()
+    # the_page =buf.getvalue()
+    # buf.close()
+    # f = open(path, 'wb')
+    # f.write(the_page)
+    # f.close()
     url = source
     f = urllib2.urlopen(url)
     data = f.read()
@@ -165,7 +204,7 @@ def glt_handle_source(source):
     global glt_tmp
     global glt_tmpAppPath
     global glt_isIPA
-    glt_tmp = os.path.join(os.path.dirname(__file__),'glt_tmp')
+    glt_tmp = os.path.join(os.path.dirname(__file__),ran_str)
     glt_userChooseIsDelete(glt_tmp)
     path, fileName = os.path.split(source)
     if '.ipa' in source:
@@ -207,7 +246,7 @@ def glt_configAppToIpa():
 
 
 def glt_remove_glt_tmp_path():
-    if os.path.exists(os.path.join(os.path.dirname(__file__),'glt_tmp')):
+    if os.path.exists(os.path.join(os.path.dirname(__file__),ran_str)):
         shutil.rmtree(glt_tmp)
 
 
@@ -416,9 +455,11 @@ def glt_handle_outputName():
     if glt_exportPath.endswith(".ipa") == False:
         glt_exportPath = "%s/glt_output.ipa" % glt_exportPath
 
+
 def glt_valid_ipa():
     cp_file = 'cp %s %s' % (glt_exportPath,glt_source)
     print(glt_cmd(cp_file))
+    # glt_unzipFile(glt_source,os.path.dirname(glt_source))
     unzip_file = 'unzip -o %s' % glt_source
     print(glt_cmd(unzip_file))
     current_dir = os.path.dirname(glt_source)
@@ -454,6 +495,10 @@ def glt_remove_local():
             os.remove(glt_source)
 
 if __name__ == "__main__":
+  
+
+		
+    print('进入重签脚本并拉取参数：%s %s' % (ran_str,get_time()))
 
     source, name, bundleid, developer, mobile, output, codesignID, encrypt, version = glt_parser_args(sys.argv)
 
@@ -477,24 +522,43 @@ if __name__ == "__main__":
             glt_exportPath = output
 
 
-
-
+        print('远程拉取ipa：%s %s' % (ran_str,get_time()))
+        glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
+        
         if re.match(r'^https?:/{2}\w.+$', source):
             # print('web')
-
-            glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
             # print('wt_input路径：%s' % glt_source)
             glt_handle_web_source(source)
         else:
             # print("local")
-            glt_source = source
+            resultPath = os.path.dirname(__file__)
+            print('+++++++%s' % resultPath)
+            if os.path.exists(source):
+                shutil.copy(source,resultPath)
+        print('拉取ipa完成：%s %s' % (ran_str,get_time()))
+
+        print('获取sign_identity：%s %s' % (ran_str,get_time()))
+
         glt_developerCodeSign = developer
+        print('获取 mobileprovison：%s %s' % (ran_str,get_time()))
+
         glt_mobile = mobile
+        
+
+        print('解压ipa：%s %s' % (ran_str,get_time()))
 
         glt_handle_source(glt_source)
+        print('获取重签entitlements：%s %s' % (ran_str,get_time()))
+
         glt_export_signInfo(glt_mobile)
+        print('重签并输出ipa：%s %s' % (ran_str,get_time()))
+
         glt_handle_outputName()
+        print('修改ipa信息：%s %s' % (ran_str,get_time()))
+
         glt_handle_developer()
+        print('移除本地缓存：%s %s' % (ran_str,get_time()))
+
         glt_remove_local()
 
         # if glt_valid_ipa() == True:

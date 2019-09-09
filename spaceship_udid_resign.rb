@@ -3,10 +3,9 @@ require 'optparse'
 require 'cert'
 require 'pathname' 
 require 'fastlane_core'
+require 'fileutils'
 
-time1 = Time.new
- 
-puts "当前时间 : " + time1.inspect
+
  
 
 options = {}
@@ -56,7 +55,7 @@ option_parser = OptionParser.new do |opts|
     options[:password] = value
   end
   #Force New Certificate
-  options[:force] = true
+  options[:force] = false
   opts.on('-f FORCE','--force Force','Force New Certificate') do |value|
     options[:force] = value
   end
@@ -96,56 +95,55 @@ if options[:output] == '' || options[:output] == nil
     exit
 end
 
-timea = Time.new
+UDID = options[:udid]
  
-puts "解锁钥匙串 : " + timea.inspect
+puts "解锁钥匙串 : " + " #{Time.now}"
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456  #{default_keychain_result}`
-Spaceship.login(options[:username],options[:password])
+user_name = options[:username]
+spaceship = Spaceship::Launcher.new(user_name,options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
-tmp_path = File.join(filepath,'tmp')
-cer_path = File.join(filepath,'tmp','certificate.cer')
-profile_path = File.join(filepath,'tmp','embedded.mobileprovision')
-timeb = Time.new
- 
-puts "开始生成创建APP : " + timeb.inspect
-# Create a new app
 
+ 
+puts "开始生成创建APP : " + " #{Time.now}"
+# Create a new app
+companyname = user_name.split('@').first
+lastname = user_name.split('@').first.reverse!
 if options[:bundleid] == '' || options[:bundleid] == nil
-    companyname = options[:username].split('@').first
-    lastname = options[:username].split('@').first.reverse!
     options[:bundleid] = ['com',companyname,lastname].join('.')
     # puts options[:bundleid]
 end
 if options[:appname] == '' || options[:appname] == nil
-    options[:appname] = options[:username].split('@').first.reverse!
+    options[:appname] = user_name.split('@').first.reverse!
     # puts options[:appname]
 end
+tmp_path = File.join(filepath,companyname,UDID)
+FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
-app = Spaceship::Portal.app.find(options[:bundleid])
+cer_path = File.join(filepath,companyname,'certificate.cer')
+profile_path = File.join(tmp_path,'embedded.mobileprovision')
+app = spaceship.app.find(options[:bundleid])
 unless app 
-
-    app = Spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
-    
+    app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
+    app.update_service(Spaceship::Portal.app_service.associated_domains.on)
+    app.update_service(Spaceship::Portal.app_service.push_notification.on)
 end
-app.update_service(Spaceship::Portal.app_service.associated_domains.on)
-app.update_service(Spaceship::Portal.app_service.push_notification.on)
 
-timec = Time.new
+
  
-puts "生成APP: " + timec.inspect
+puts "生成APP: " + " #{Time.now}"
 
-device = Spaceship.device.find_by_udid(options[:udid], include_disabled: true)
+device = spaceship.device.find_by_udid(UDID, include_disabled: true)
 # puts device
 unless device
     #Register a new device
    unless options[:devicename]
-       options[:devicename] = options[:udid]
+       options[:devicename] = UDID
    end
    begin
-     device = Spaceship.device.create!(name: options[:devicename], udid: options[:udid])
+     device = spaceship.device.create!(name: options[:devicename], udid: UDID)
    rescue Exception => exception
      puts exception.message
      puts exception.backtrace.inspect
@@ -154,54 +152,60 @@ unless device
 end
 device = device.enable!
 
-timee = Time.new
 
-puts "开始获取证书 : " + timee.inspect
-cert_first= Spaceship.certificate.development.all.first
-if cert_first
-    # puts cert
-    File.write(cer_path,cert_first.download)
-else
-        # Create a new certificate signing request
-    csr, pkey = Spaceship.certificate.create_certificate_signing_request
-    puts pkey
-    # Use the signing request to create a new development certificate
-    cert_first = Spaceship.certificate.development.create!(csr: csr)
-    # cert = Spaceship.certificate.development.all.first
-    # puts cert
-    File.write(cer_path,cert_first.download)
+puts "开始获取证书 : " + " #{Time.now}"
+cert = spaceship.certificate.development.all
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
+  
+  cert_first= cert.first
+  if cert_first
+      # puts cert
+      File.write(cer_path,cert_first.download)
+  else
+          # Create a new certificate signing request
+      csr, pkey = spaceship.certificate.create_certificate_signing_request
+      puts pkey
+      # Use the signing request to create a new development certificate
+      cert_first = spaceship.certificate.development.create!(csr: csr)
+      # cert = Spaceship.certificate.development.all.first
+      # puts cert
+      File.write(cer_path,cert_first.download)
+  end
+  
 end
+
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
-timef = Time.new
-puts "开始获取描述文件 : " + timef.inspect
-cert = Spaceship.certificate.development.all
+puts "开始获取描述文件 : " + " #{Time.now}"
+
 # puts cert
-profile_name = app.bundle_id + " #{Time.now.to_i}"
-profile_dev = Spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
+profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
+profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
         certificate: cert)
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
-timeg = Time.new
  
-puts "当前时间 : " + timeg.inspect
-
 keychain_path = '/srv/www/Library/Keychains/login.keychain-db'
-FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
+
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
+  FastlaneCore::KeychainImporter.import_file(cer_path, keychain_path, keychain_password: '123456', certificate_password: '123456')
+end
 
 # origin fastlane import_certificate
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
 #puts import_certificate_cmd
-timeh = Time.new
  
-puts "开始重签 : " + timeh.inspect
-# pem_path = File.join(filepath,'tmp','certificate.pem')
 
+# pem_path = File.join(filepath,companyname,'certificate.pem')
+puts "复制mobileprovision到对应文件夹 : " + " #{Time.now}"
 resign_file_path = File.join(filepath,'wt_isign_macos.py')
-
+tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
+FileUtils.cp resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
 # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
 # puts cer_to_pem
+puts "获取mobileprovision里面的sign_identity : " + " #{Time.now}"
+
 get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
 # puts get_cer_subject_mobileprovision
 sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
@@ -209,19 +213,54 @@ identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
 # puts identity
 codesign_identity = identity.strip
 # profile.download
+output_path = options[:output]
+input_path = options[:input]
+puts "输入#{input_path}"
+if input_path and output_path
+  # begin
+  #   download = open(options[:input])
+  #   filename = download.base_uri.to_s.split('/')[-1]
+  #   # resigned_filename = "resigned_" + download.base_uri.to_s.split('/')[-1] 
+  #   download_path = File.join(tmp_path,filename)
+  #   # resigned_path = File.join(tmp_path,resigned_filename)
+  #   # display_name = resigned_filename.gsub(/.ipa/,'')
+  #   IO.copy_stream(download, download_path)
+  #   resign = Sigh::Resign.resign(download_path, "#{codesign_identity}", profile_path, nil, nil, nil, nil, nil, nil, nil, keychain_path)
+  #   # resign = Sigh::Resign.resign(ipa:download_path, signing_identity:"#{codesign_identity}", provisioning_profile:"#{profile_path}",display_name:"#{resigned_filename}",keychain_path:keychain_path)
+  #   FileUtils.cp download_path,options[:output] unless File.exists?(download_path)
 
-if options[:input] and options[:output]
+  #   puts "重签完成 : " + " #{Time.now}"
+  #   if resign
+  #   puts "success"
+  #   else
+  #   puts "failure"
+  #   end
+  # rescue => exception
+  #   puts exception
+  puts "创建输出目录 : " + " #{Time.now}"
+  out_dir = File.dirname(output_path)
+  # puts out_dir
+  FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
+
+  puts "开始重签 : " + " #{Time.now}"
+ 
+      resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
+      # puts resign
+      # " #{Time.now}" 功能相同
+      puts "重签完成 : " + " #{Time.now}"
+      if resign.include? "success"
+      puts "success"
+      else
+      puts "failure"
+      end
+ 
+
+  
+    
+
+  # end
 # resign_cmd = "python #{resign_file_path} -i #{options[:input]} -d '#{codesign_identity}' -o #{options[:output]} -m #{profile_path}"
 # puts resign_cmd
-resign = `python #{resign_file_path} -i #{options[:input]} -d "#{codesign_identity}" -o #{options[:output]} -m #{profile_path}`
-# puts resign
-# Time.now 功能相同
-time2 = Time.now
-puts "重签完成 : " + time2.inspect
-if resign.include? "success"
-  puts "success"
-else
-  puts "failure"
-end
+
 
 end
