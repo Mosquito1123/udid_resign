@@ -100,7 +100,7 @@ UDID = options[:udid]
 puts "解锁钥匙串 : " + " #{Time.now}"
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
-`security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
+`security unlock-keychain -p 123456 #{default_keychain_result}`
 user_name = options[:username]
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
@@ -187,7 +187,7 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 File.write(profile_path, profile_dev.download)
  
 if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
-  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: 'V@kP4eLnUU5l', certificate_password: '123456')
+  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: '123456', certificate_password: '123456')
 end
 
 # origin fastlane import_certificate
