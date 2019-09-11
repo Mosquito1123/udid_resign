@@ -111,9 +111,9 @@ puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
 companyname = user_name.split('@').first
 lastname = user_name.split('@').first.reverse!
+default_bundle_id = ['com',companyname,lastname].join('.')
 if options[:bundleid] == '' || options[:bundleid] == nil
-    options[:bundleid] = ['com',companyname,lastname].join('.')
-    # puts options[:bundleid]
+    options[:bundleid] = default_bundle_id
 end
 if options[:appname] == '' || options[:appname] == nil
     options[:appname] = user_name.split('@').first.reverse!
@@ -124,9 +124,9 @@ FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
 cer_path = File.join(filepath,companyname,'certificate.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
-app = spaceship.app.find(options[:bundleid])
+app = spaceship.app.find(default_bundle_id)
 unless app 
-    app = spaceship.app.create!(bundle_id: options[:bundleid], name: options[:appname])
+    app = spaceship.app.create!(bundle_id: default_bundle_id, name: options[:appname])
     app.update_service(Spaceship::Portal.app_service.associated_domains.on)
     app.update_service(Spaceship::Portal.app_service.push_notification.on)
 end
@@ -241,16 +241,29 @@ if input_path and output_path
   FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
   puts "开始重签 : " + " #{Time.now}"
- 
-      resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
-      # puts resign
-      # " #{Time.now}" 功能相同
-      puts "重签完成 : " + " #{Time.now}"
-      if resign.include? "success"
-      puts "success"
+      if options[:bundleid] == default_bundle_id
+        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
+        # puts resign
+        # " #{Time.now}" 功能相同
+        puts "重签完成 : " + " #{Time.now}"
+        if resign.include? "success"
+        puts "success"
+        else
+        puts "failure"
+        end
       else
-      puts "failure"
+        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}"`
+        # puts resign
+        # " #{Time.now}" 功能相同
+        puts "重签完成 : " + " #{Time.now}"
+        if resign.include? "success"
+        puts "success"
+        else
+        puts "failure"
+        end
       end
+     
+      
  
 
   
