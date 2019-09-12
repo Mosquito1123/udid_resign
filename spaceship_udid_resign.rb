@@ -241,7 +241,7 @@ if input_path and output_path
   FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
 
   puts "开始重签 : " + " #{Time.now}"
-      if options[:bundleid] == default_bundle_id
+      if options[:bundleid] == nil || options[:bundleid] == ''
         resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
         # puts resign
         # " #{Time.now}" 功能相同
