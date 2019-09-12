@@ -285,7 +285,7 @@ def glt_resignappWithPath(filePath):
 
 
 def glt_handle_resignFiles():
-    findCondition = '\\( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.dylib" \\)'
+    findCondition = '\\( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.nibs" -o -name "*.dylib" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
     result = glt_cmd(cmd)
     glt_writeToFile(result)
