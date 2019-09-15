@@ -112,9 +112,9 @@ puts "开始生成创建APP : " + " #{Time.now}"
 companyname = user_name.split('@').first
 lastname = user_name.split('@').first.reverse!
 default_bundle_id = ['com',companyname,lastname].join('.')
-if options[:bundleid] == '' || options[:bundleid] == nil
-    options[:bundleid] = default_bundle_id
-end
+#if options[:bundleid] == '' || options[:bundleid] == nil
+#    options[:bundleid] = default_bundle_id
+#end
 if options[:appname] == '' || options[:appname] == nil
     options[:appname] = user_name.split('@').first.reverse!
     # puts options[:appname]
