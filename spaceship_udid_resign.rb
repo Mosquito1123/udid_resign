@@ -130,7 +130,9 @@ begin
   app = spaceship.app.find(default_bundle_id)
 
 rescue => exception
-  puts exception
+  puts exception.class
+  puts exception.resultCode
+  puts exception.resultString
   exit
 
 end
