@@ -167,9 +167,9 @@ unless device
    begin
      device = spaceship.device.create!(name: options[:devicename], udid: UDID)
    rescue Exception => exception
-     puts exception.message
-     puts exception.backtrace.inspect
-     exit
+      puts exception.message
+      puts exception.class
+      exit
    end
 end
 device = device.enable!
