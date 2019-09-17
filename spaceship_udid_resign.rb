@@ -130,9 +130,21 @@ begin
   app = spaceship.app.find(default_bundle_id)
 
 rescue => exception
+  # legacy support
+  # BasicPreferredInfoError = Spaceship::BasicPreferredInfoError
+  # InvalidUserCredentialsError = Spaceship::InvalidUserCredentialsError
+  # NoUserCredentialsError = Spaceship::NoUserCredentialsError
+  # ProgramLicenseAgreementUpdated = Spaceship::ProgramLicenseAgreementUpdated
+  # InsufficientPermissions = Spaceship::InsufficientPermissions
+  # UnexpectedResponse = Spaceship::UnexpectedResponse
+  # AppleTimeoutError = Spaceship::AppleTimeoutError
+  # UnauthorizedAccessError = Spaceship::UnauthorizedAccessError
+  # GatewayTimeoutError = Spaceship::GatewayTimeoutError
+  # InternalServerError = Spaceship::InternalServerError
+  # BadGatewayError = Spaceship::BadGatewayError
   puts exception.class
-  puts exception.resultCode
-  puts exception.resultString
+  puts exception['resultCode'].red
+  puts exception['resultString'].red
   exit
 
 end
