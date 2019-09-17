@@ -200,6 +200,7 @@ end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 puts "开始获取描述文件 : " + " #{Time.now}"
+cert = spaceship.certificate.development.all
 
 # puts cert
 profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
