@@ -143,7 +143,8 @@ rescue => exception
   # InternalServerError = Spaceship::InternalServerError
   # BadGatewayError = Spaceship::BadGatewayError
   puts exception.class
-  puts exception.to_json("m")
+  puts exception.to_json("resultCode").to_s
+  puts exception.to_json("resultString").to_s
   exit
 
 end
