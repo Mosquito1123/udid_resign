@@ -102,16 +102,7 @@ default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p 123456 #{default_keychain_result}`
 user_name = options[:username]
-spaceship = nil
-begin
-  spaceship = Spaceship::Launcher.new(user_name,options[:password])
-
-rescue => exception
-  puts exception
-  exit
-  
-end
-
+spaceship = Spaceship::Launcher.new(user_name,options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 
@@ -133,7 +124,16 @@ FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
 cer_path = File.join(filepath,companyname,'certificate.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
-app = spaceship.app.find(default_bundle_id)
+
+app = nil
+begin
+  app = spaceship.app.find(default_bundle_id)
+
+rescue => exception
+  puts exception
+  exit
+
+end
 unless app 
     app = spaceship.app.create!(bundle_id: default_bundle_id, name: options[:appname])
     app.update_service(Spaceship::Portal.app_service.associated_domains.on)
