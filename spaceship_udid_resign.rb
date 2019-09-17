@@ -124,7 +124,7 @@ FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
 cer_path = File.join(filepath,companyname,'certificate.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
-
+private_key_path = File.join(filepath,companyname,'key.p12')
 app = nil
 begin
   app = spaceship.app.find(default_bundle_id)
@@ -186,13 +186,15 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   else
           # Create a new certificate signing request
       csr, pkey = spaceship.certificate.create_certificate_signing_request
-      puts pkey
+      File.write(private_key_path,pkey)
       # Use the signing request to create a new development certificate
       cert_first = spaceship.certificate.development.create!(csr: csr)
       # cert = Spaceship.certificate.development.all.first
       # puts cert
       File.write(cer_path,cert_first.download)
   end
+  FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+
   FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
 
 end
