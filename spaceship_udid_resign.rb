@@ -142,8 +142,8 @@ rescue => exception
   # GatewayTimeoutError = Spaceship::GatewayTimeoutError
   # InternalServerError = Spaceship::InternalServerError
   # BadGatewayError = Spaceship::BadGatewayError
-  puts exception.class
   puts exception.message
+  puts exception.class
   exit
 
 end
