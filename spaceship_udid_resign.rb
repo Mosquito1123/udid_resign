@@ -193,7 +193,8 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
       # puts cert
       File.write(cer_path,cert_first.download)
   end
-  
+  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: '123456', certificate_password: '123456')
+
 end
 
 
@@ -209,9 +210,7 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
-if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
-  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: '123456', certificate_password: '123456')
-end
+
 
 # origin fastlane import_certificate
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`
