@@ -193,7 +193,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
       # puts cert
       File.write(cer_path,cert_first.download)
   end
-  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: '123456', certificate_password: '123456')
+  FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: '123456', certificate_password: '123456')
 
 end
 
