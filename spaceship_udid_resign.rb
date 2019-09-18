@@ -4,6 +4,9 @@ require 'cert'
 require 'pathname' 
 require 'fastlane_core'
 require 'fileutils'
+require 'openssl'
+require 'aliyun/oss'
+
 
 
  
@@ -100,7 +103,7 @@ UDID = options[:udid]
 puts "解锁钥匙串 : " + " #{Time.now}"
 default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
-`security unlock-keychain -p 123456 #{default_keychain_result}`
+`security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
@@ -112,9 +115,9 @@ puts "开始生成创建APP : " + " #{Time.now}"
 companyname = user_name.split('@').first
 lastname = user_name.split('@').first.reverse!
 default_bundle_id = ['com',companyname,lastname].join('.')
-if options[:bundleid] == '' || options[:bundleid] == nil
-    options[:bundleid] = default_bundle_id
-end
+#if options[:bundleid] == '' || options[:bundleid] == nil
+#    options[:bundleid] = default_bundle_id
+#end
 if options[:appname] == '' || options[:appname] == nil
     options[:appname] = user_name.split('@').first.reverse!
     # puts options[:appname]
@@ -122,9 +125,34 @@ end
 tmp_path = File.join(filepath,companyname,UDID)
 FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
+
+# companyname_tmp_path = File.join(filepath,companyname)
 cer_path = File.join(filepath,companyname,'certificate.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
-app = spaceship.app.find(default_bundle_id)
+private_key_path = File.join(filepath,companyname,'key.p12')
+# cer_p12_path = File.join(filepath,companyname,'certificate.p12')
+app = nil
+begin
+  app = spaceship.app.find(default_bundle_id)
+
+rescue => exception
+  # legacy support
+  # BasicPreferredInfoError = Spaceship::BasicPreferredInfoError
+  # InvalidUserCredentialsError = Spaceship::InvalidUserCredentialsError
+  # NoUserCredentialsError = Spaceship::NoUserCredentialsError
+  # ProgramLicenseAgreementUpdated = Spaceship::ProgramLicenseAgreementUpdated
+  # InsufficientPermissions = Spaceship::InsufficientPermissions
+  # UnexpectedResponse = Spaceship::UnexpectedResponse
+  # AppleTimeoutError = Spaceship::AppleTimeoutError
+  # UnauthorizedAccessError = Spaceship::UnauthorizedAccessError
+  # GatewayTimeoutError = Spaceship::GatewayTimeoutError
+  # InternalServerError = Spaceship::InternalServerError
+  # BadGatewayError = Spaceship::BadGatewayError
+  puts exception.message
+  puts exception.class
+  exit
+
+end
 unless app 
     app = spaceship.app.create!(bundle_id: default_bundle_id, name: options[:appname])
     app.update_service(Spaceship::Portal.app_service.associated_domains.on)
@@ -145,39 +173,70 @@ unless device
    begin
      device = spaceship.device.create!(name: options[:devicename], udid: UDID)
    rescue Exception => exception
-     puts exception.message
-     puts exception.backtrace.inspect
-     exit
+      puts exception.message
+      puts exception.class
+      exit
    end
 end
 device = device.enable!
 
 
 puts "开始获取证书 : " + " #{Time.now}"
-cert = spaceship.certificate.development.all
-if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
-  
-  cert_first= cert.first
-  if cert_first
-      # puts cert
-      File.write(cer_path,cert_first.download)
+  if File.exists?(private_key_path) && File.exists?(cer_path)
+    
   else
-          # Create a new certificate signing request
-      csr, pkey = spaceship.certificate.create_certificate_signing_request
-      puts pkey
-      # Use the signing request to create a new development certificate
-      cert_first = spaceship.certificate.development.create!(csr: csr)
-      # cert = Spaceship.certificate.development.all.first
-      # puts cert
-      File.write(cer_path,cert_first.download)
+
   end
+    
   
+
+  
+
+
+cert = spaceship.certificate.development.all
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false
+  
+  client = Aliyun::OSS::Client.new(
+    :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
+    :access_key_id => 'LTAIe2W3EwkUiV02',
+    :access_key_secret => '5rQbdIkSEsrIpZdf0WFAySdTQ0jJG3')
+  bucket = client.get_bucket('apps-new2')
+  key1 = "certificate_and_keys/#{companyname}/key.p12"
+  key2 = "certificate_and_keys/#{companyname}/certificate.cer"
+
+  if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true
+    bucket.get_object(key1, :file => private_key_path)
+    bucket.get_object(key2, :file => cer_path)
+
+
+  else
+    csr, pkey = spaceship.certificate.create_certificate_signing_request
+    File.write(private_key_path,pkey)
+    # Use the signing request to create a new development certificate
+    cert_first = spaceship.certificate.development.create!(csr: csr)
+    # cert = Spaceship.certificate.development.all.first
+    # puts cert
+    File.write(cer_path,cert_first.download)
+    bucket.put_object(key1,:file => private_key_path)
+    bucket.put_object(key2,:file => cer_path)
+  end
+  installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+  if installed == true
+    
+  else
+    FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+    FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+  end
+
+  
+
 end
 
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 puts "开始获取描述文件 : " + " #{Time.now}"
+cert = spaceship.certificate.development.all
 
 # puts cert
 profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
@@ -186,9 +245,7 @@ profile_dev = spaceship.provisioning_profile.development.create!(name:profile_na
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
-if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
-  FastlaneCore::KeychainImporter.import_file(cer_path, default_keychain_result, keychain_password: '123456', certificate_password: '123456')
-end
+
 
 # origin fastlane import_certificate
 # import_certificate_cmd = `fastlane run import_certificate certificate_path:"#{cer_path}" certificate_password:"123456" keychain_name:"login.keychain-db"`

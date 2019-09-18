@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AppIDName</key>
+	<string>7r2qyu</string>
+	<key>ApplicationIdentifierPrefix</key>
+	<array>
+	<string>CMNLF4YP96</string>
+	</array>
+	<key>CreationDate</key>
+	<date>2019-09-13T07:38:13Z</date>
+	<key>Platform</key>
+	<array>
+		<string>iOS</string>
+	</array>
+	<key>IsXcodeManaged</key>
+	<false/>
+	<key>DeveloperCertificates</key>
+	<array>
+		<data>MIIFmDCCBICgAwIBAgIICDM4DaG3wZwwDQYJKoZIhvcNAQELBQAwgZYxCzAJBgNVBAYTAlVTMRMwEQYDVQQKDApBcHBsZSBJbmMuMSwwKgYDVQQLDCNBcHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9uczFEMEIGA1UEAww7QXBwbGUgV29ybGR3aWRlIERldmVsb3BlciBSZWxhdGlvbnMgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMTkwODI3MTA0MTUzWhcNMjAwODI2MTA0MTUzWjCBizEaMBgGCgmSJomT8ixkAQEMClVESENaM1IzVzIxNDAyBgNVBAMMK2lQaG9uZSBEZXZlbG9wZXI6IE1hcmJlcyBDZWxheSAoUktCNkZUWDhYSykxEzARBgNVBAsMCkNNTkxGNFlQOTYxFTATBgNVBAoMDE1hcmJlcyBDZWxheTELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCgXWjUp83DAHzH+QEwrqu2MkC6RpJsjzR2RWqyBbBT26EOcF34/TdQAvWLaVnl1zo/1xooL8dy85+KDP9BYqo8MbgQHnop1NJx/zFyFlO/Stnuapqx3s9P6PrzI9MWE7OaJuiDINJLc5tyJdPprOPv4bxI5JOQYh+Apdgs5vA3bBVgldY5Y1wREr2XTpGDikR0pVYbr4QsjuMnYcKSmwEs5zyqAlI7pMU9v3wZWQQJIXvUoxQx6wAN9yDl16Dhln0igReWbEz8RreJzzdJyUqjBsddcOdpV/gPHMa8XI5a0gKFcZ5z03AYWedZ4KkmPdRkxHxcgYtB0cG0T0epESFFAgMBAAGjggHxMIIB7TAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIgnFwmpthhgi+zruvZHWcVSVKO3MD8GCCsGAQUFBwEBBDMwMTAvBggrBgEFBQcwAYYjaHR0cDovL29jc3AuYXBwbGUuY29tL29jc3AwMy13d2RyMDEwggEdBgNVHSAEggEUMIIBEDCCAQwGCSqGSIb3Y2QFATCB/jCBwwYIKwYBBQUHAgIwgbYMgbNSZWxpYW5jZSBvbiB0aGlzIGNlcnRpZmljYXRlIGJ5IGFueSBwYXJ0eSBhc3N1bWVzIGFjY2VwdGFuY2Ugb2YgdGhlIHRoZW4gYXBwbGljYWJsZSBzdGFuZGFyZCB0ZXJtcyBhbmQgY29uZGl0aW9ucyBvZiB1c2UsIGNlcnRpZmljYXRlIHBvbGljeSBhbmQgY2VydGlmaWNhdGlvbiBwcmFjdGljZSBzdGF0ZW1lbnRzLjA2BggrBgEFBQcCARYqaHR0cDovL3d3dy5hcHBsZS5jb20vY2VydGlmaWNhdGVhdXRob3JpdHkvMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMDMB0GA1UdDgQWBBRoySRL/zzKxkmF6xuKBEXEEgPmZjAOBgNVHQ8BAf8EBAMCB4AwEwYKKoZIhvdjZAYBAgEB/wQCBQAwDQYJKoZIhvcNAQELBQADggEBAG3pT+bA2uR1FLP50maJTpfRyIurd9Nbo0Vh6S3CRGZrZ8xGHG1xjIRwH7qeP0jpq56BdwTL+vRbuIZkHAW+3ujmY+QBnbXV6UAfRc8vxEdFSdpUlBaS19CLUKNkscddlVoWiNQsrcC7mCVMBXMXdEQ+BBLn0jdksSI4Tfm4IXzgE0aWFxWIIeW2HzrMp02hFb83uZo4Ub/8oanY3UEZgRKcHfgHzuSktT8N3gErBZHoI+tI0OGXWd4s18pvtlRpyJ9ivD8u1ScVhS7zMpxB7hbRzyvlhKFdFd+pnKXGUJxPCt+0ZuASTsQhE3m/DNuEdNKMC5P5gqPPOjVYTHoK2wk=</data>
+	</array>
+
+												
+	<key>Entitlements</key>
+	<dict>
+				
+				<key>application-identifier</key>
+		<string>CMNLF4YP96.com.uyq2r7.7r2qyu</string>
+				
+				<key>keychain-access-groups</key>
+		<array>
+				<string>CMNLF4YP96.*</string>
+		</array>
+				
+				<key>get-task-allow</key>
+		<true/>
+				
+				<key>com.apple.developer.team-identifier</key>
+		<string>CMNLF4YP96</string>
+				
+				<key>aps-environment</key>
+		<string>development</string>
+				
+				<key>com.apple.developer.associated-domains</key>
+		<string>*</string>
+
+	</dict>
+	<key>ExpirationDate</key>
+	<date>2020-09-12T07:38:13Z</date>
+	<key>Name</key>
+	<string>com.uyq2r7.7r2qyu leaykgqf</string>
+	<key>ProvisionedDevices</key>
+	<array>
+		<string>00008020-000C0D563602002E</string>
+		<string>48c7351ad530f48ac098629026dd453992b4281a</string>
+		<string>7313dbcb2be78b5a61e1b378fcb1b9dd555d17d9</string>
+		<string>4b95d5171a6cc2480f5122b0c0c4a7f1007506be</string>
+		<string>cf882952a91a35336b2b17e026f7fb506ca6ffce</string>
+		<string>00008020-000A55182292002E</string>
+		<string>00008020-000E28643A06002E</string>
+		<string>914661dab220262453a8900af488aed417db1eea</string>
+		<string>3e9e7351faf07690a2e857915d989d099f9a56eb</string>
+		<string>a7d17329df2aff7c2eac6866b207404c6a68193c</string>
+		<string>77a0883d227f20e43b8d5699d4aa764281076258</string>
+		<string>3011ef499e035ad9a068943601d40da3f2f13abb</string>
+		<string>85a464c1c83fd955121092d1fc3675e352857432</string>
+		<string>bafa58b089749532cbfc35ab8319cfd9987457d0</string>
+		<string>079cc830b28c38d58de159299018c6ff9598c598</string>
+		<string>c82566975db815ab178fda688ab1a8b97f01928f</string>
+		<string>e3d0b00c9289d28b1cc0af04c45f447f5f9f8e32</string>
+		<string>247feab61c2ec9bddcd3b456e0cce6f7ac478520</string>
+		<string>d9ce3ed470859476dec39b0b7eade7723fbed46e</string>
+		<string>7abed0c72711a0bfe8b3c7df8b49015a8f5b515c</string>
+		<string>474914f922852af5c47fc7bd6116065efc748bda</string>
+		<string>3697048ebf7683778e47ba10c08fe49782e0c826</string>
+		<string>f6026f7b6b137988ea5a25ee23bdb7b60ecfc519</string>
+		<string>00008020-00117C190C68002E</string>
+		<string>1bcd0e189aba02b16302befe16738b1b8db8ed3b</string>
+		<string>0e4929d5060823e368d59a8abe3d00828d7f598c</string>
+		<string>b91588170eac719acc2204b773e9725bdbcfad4c</string>
+		<string>8d759deffee437d90a4e9f83521af509e357a84e</string>
+		<string>86392f0ec1d85e344546b65b02a93d4a8ce228a1</string>
+		<string>1a9e8ade13b64edf6bc9af8f438fdebd9d21da21</string>
+		<string>de78ccddb7190ca11e0f19b57015230d6e4d8e06</string>
+		<string>84d78675161a53063bad7f852fd869042f8e8693</string>
+		<string>00008020-0005152C01DA002E</string>
+	</array>
+	<key>TeamIdentifier</key>
+	<array>
+		<string>CMNLF4YP96</string>
+	</array>
+	<key>TeamName</key>
+	<string>Marbes Celay</string>
+	<key>TimeToLive</key>
+	<integer>365</integer>
+	<key>UUID</key>
+	<string>271a1ed0-edbc-4868-9496-ed085ebf4f2a</string>
+	<key>Version</key>
+	<integer>1</integer>
+</dict>
+</plist>
