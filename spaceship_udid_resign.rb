@@ -4,6 +4,7 @@ require 'cert'
 require 'pathname' 
 require 'fastlane_core'
 require 'fileutils'
+require 'openssl'
 
 
  
@@ -182,6 +183,9 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   cert_first= cert.first
   if cert_first
       # puts cert
+      pkey = OpenSSL::PKey::RSA.new(2048)
+      File.write(private_key_path,pkey)
+
       File.write(cer_path,cert_first.download)
   else
           # Create a new certificate signing request
