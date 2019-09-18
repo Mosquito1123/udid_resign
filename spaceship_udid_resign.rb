@@ -5,6 +5,8 @@ require 'pathname'
 require 'fastlane_core'
 require 'fileutils'
 require 'openssl'
+require 'aliyun/oss'
+
 
 
  
@@ -123,9 +125,12 @@ end
 tmp_path = File.join(filepath,companyname,UDID)
 FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
+
+# companyname_tmp_path = File.join(filepath,companyname)
 cer_path = File.join(filepath,companyname,'certificate.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
 private_key_path = File.join(filepath,companyname,'key.p12')
+# cer_p12_path = File.join(filepath,companyname,'certificate.p12')
 app = nil
 begin
   app = spaceship.app.find(default_bundle_id)
@@ -177,15 +182,37 @@ device = device.enable!
 
 
 puts "开始获取证书 : " + " #{Time.now}"
+  if File.exists?(private_key_path) && File.exists?(cer_path)
+    
+  else
+
+  end
+    
+  
+
+  
+
+
 cert = spaceship.certificate.development.all
 if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   
   cert_first= cert.first
-  if cert_first
-      # puts cert
-      pkey = OpenSSL::PKey::RSA.new(2048)
-      File.write(private_key_path,pkey)
+  client = Aliyun::OSS::Client.new(
+    :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
+    :access_key_id => 'LTAIe2W3EwkUiV02',
+    :access_key_secret => '5rQbdIkSEsrIpZdf0WFAySdTQ0jJG3')
+  bucket = client.get_bucket('apps-new2')
+  key1 = "certificate_and_keys/#{companyname}/key.p12"
+  key2 = "certificate_and_keys/#{companyname}/certificate.cer"
 
+  
+  if cert_first
+      if bucket.object_exists?(key1)
+        bucket.get_object(key1, :file => private_key_path)
+      end
+      if bucket.object_exists?(key2)
+        bucket.get_object(key2, :file => cer_path)
+      end
       File.write(cer_path,cert_first.download)
   else
           # Create a new certificate signing request
@@ -196,6 +223,9 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
       # cert = Spaceship.certificate.development.all.first
       # puts cert
       File.write(cer_path,cert_first.download)
+      bucket.put_object(key1,:file => private_key_path)
+      bucket.put_object(key2,:file => cer_path)
+
   end
   FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
 
