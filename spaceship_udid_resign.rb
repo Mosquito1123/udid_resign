@@ -194,9 +194,8 @@ puts "开始获取证书 : " + " #{Time.now}"
 
 
 cert = spaceship.certificate.development.all
-if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false
   
-  cert_first= cert.first
   client = Aliyun::OSS::Client.new(
     :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
     :access_key_id => 'LTAIe2W3EwkUiV02',
@@ -205,31 +204,31 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   key1 = "certificate_and_keys/#{companyname}/key.p12"
   key2 = "certificate_and_keys/#{companyname}/certificate.cer"
 
-  
-  if cert_first
-      if bucket.object_exists?(key1)
-        bucket.get_object(key1, :file => private_key_path)
-      end
-      if bucket.object_exists?(key2)
-        bucket.get_object(key2, :file => cer_path)
-      end
-      File.write(cer_path,cert_first.download)
+  if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true
+    bucket.get_object(key1, :file => private_key_path)
+    bucket.get_object(key2, :file => cer_path)
+
+
   else
-          # Create a new certificate signing request
-      csr, pkey = spaceship.certificate.create_certificate_signing_request
-      File.write(private_key_path,pkey)
-      # Use the signing request to create a new development certificate
-      cert_first = spaceship.certificate.development.create!(csr: csr)
-      # cert = Spaceship.certificate.development.all.first
-      # puts cert
-      File.write(cer_path,cert_first.download)
-      bucket.put_object(key1,:file => private_key_path)
-      bucket.put_object(key2,:file => cer_path)
-
+    csr, pkey = spaceship.certificate.create_certificate_signing_request
+    File.write(private_key_path,pkey)
+    # Use the signing request to create a new development certificate
+    cert_first = spaceship.certificate.development.create!(csr: csr)
+    # cert = Spaceship.certificate.development.all.first
+    # puts cert
+    File.write(cer_path,cert_first.download)
+    bucket.put_object(key1,:file => private_key_path)
+    bucket.put_object(key2,:file => cer_path)
   end
-  FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+  installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+  if installed == true
+    
+  else
+    FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+    FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+  end
 
-  FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+  
 
 end
 
