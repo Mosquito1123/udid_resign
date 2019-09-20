@@ -205,7 +205,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
 
-    a_cert = File.read(cer_path)
+    a_cert = File.binread(cer_path)
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
     File.write(private_key_path,pkey)
