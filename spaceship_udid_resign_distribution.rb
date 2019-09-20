@@ -128,7 +128,7 @@ FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 
 # companyname_tmp_path = File.join(filepath,companyname)
 cer_path = File.join(filepath,companyname,'certificate_production.cer')
-profile_path = File.join(tmp_path,'embedded_production.mobileprovision')
+profile_path = File.join(tmp_path,'embedded.mobileprovision')
 private_key_path = File.join(filepath,companyname,'key_production.p12')
 # cer_p12_path = File.join(filepath,companyname,'certificate.p12')
 app = nil
