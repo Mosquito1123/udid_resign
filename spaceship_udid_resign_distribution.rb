@@ -237,6 +237,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 end
 
 a_cert_id = File.read(cert_id_path)
+puts a_cert_id
 a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
 puts a_cert
 unless a_cert
