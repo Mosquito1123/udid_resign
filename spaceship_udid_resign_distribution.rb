@@ -210,7 +210,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     puts cert_contents_base_64
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
-       certx.id == cert_contents_base_64
+       certx.id == cert_contents_base_64.id
     end
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
@@ -238,7 +238,7 @@ cert_contents_base_64 = OpenSSL::X509::Certificate.new(File.binread(cer_path))
 puts cert_contents_base_64
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
-    certx.id == cert_contents_base_64
+    certx.id == cert_contents_base_64.id
 end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
