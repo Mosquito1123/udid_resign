@@ -224,6 +224,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     puts infos
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
+       puts certx
        certx.id == infos['UID']
     end
   else
@@ -266,6 +267,7 @@ infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
 puts infos
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
+    puts certx
     certx.id == infos['UID']
 end
 # origin fastlane cert
