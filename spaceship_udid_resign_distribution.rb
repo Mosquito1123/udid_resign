@@ -221,10 +221,8 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
                       .compact
                       .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
                       
-    puts infos
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
-       puts certx
        certx.owner_id == infos['UID']
     end
   else
@@ -264,10 +262,8 @@ infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
                       .compact
                       .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
                       
-puts infos
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
-    puts certx
     certx.owner_id == infos['UID']
 end
 # origin fastlane cert
@@ -278,7 +274,7 @@ puts "开始获取描述文件 : " + " #{Time.now}"
 # puts cert
 profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
 profile_dev = spaceship.provisioning_profile.ad_hoc.create!(name:profile_name,bundle_id: app.bundle_id,
-        certificate: a_cert)
+        certificate: a_cert.first)
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
