@@ -205,7 +205,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
 
-    a_cert = File.binread(cer_path)
+    a_cert = OpenSSL::X509::Certificate.new(File.binread(cer_certificate_path))
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
     File.write(private_key_path,pkey)
@@ -228,6 +228,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   
 
 end
+a_cert = OpenSSL::X509::Certificate.new(File.binread(cer_certificate_path))
 
 
 # origin fastlane cert
