@@ -228,7 +228,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   
 
 end
-a_cert = OpenSSL::X509::Certificate.new(File.binread(cer_path))
+a_cert = File.binread(cer_path)
 
 
 # origin fastlane cert
