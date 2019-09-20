@@ -206,25 +206,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key2, :file => cer_path)
 
 
-    cert_contents_base_64 = OpenSSL::X509::Certificate.new(File.binread(cer_path))
-    cert_info = cert_contents_base_64.subject.to_s.gsub(/\s*subject=\s*/, "").tr("/", "\n")
-    out_array = cert_info.split("\n")
-    openssl_keys_to_readable_keys = {
-           'UID' => 'User ID',
-           'CN' => 'Common Name',
-           'OU' => 'Organisation Unit',
-           'O' => 'Organisation',
-           'C' => 'Country'
- 
-    }
-    infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
-                      .compact
-                      .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
-                      
-    certs =  spaceship.certificate.production.all
-    a_cert = certs.find do |certx|
-       certx.owner_id == infos['UID']
-    end
+    
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
     File.write(private_key_path,pkey)
@@ -247,25 +229,10 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   
 
 end
-cert_contents_base_64 = OpenSSL::X509::Certificate.new(File.binread(cer_path))
-cert_info = cert_contents_base_64.subject.to_s.gsub(/\s*subject=\s*/, "").tr("/", "\n")
-out_array = cert_info.split("\n")
-openssl_keys_to_readable_keys = {
-           'UID' => 'User ID',
-           'CN' => 'Common Name',
-           'OU' => 'Organisation Unit',
-           'O' => 'Organisation',
-           'C' => 'Country'
-         
-}
-infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
-                      .compact
-                      .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
+
                       
-certs =  spaceship.certificate.production.all
-a_cert = certs.find do |certx|
-    certx.owner_id == infos['UID']
-end
+a_cert =  spaceship.certificate.production.all.first
+
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 puts "开始获取描述文件 : " + " #{Time.now}"
@@ -274,7 +241,7 @@ puts "开始获取描述文件 : " + " #{Time.now}"
 # puts cert
 profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
 profile_dev = spaceship.provisioning_profile.ad_hoc.create!(name:profile_name,bundle_id: app.bundle_id,
-        certificate: a_cert.first)
+        certificate: a_cert)
 # puts profile_dev
 File.write(profile_path, profile_dev.download)
  
