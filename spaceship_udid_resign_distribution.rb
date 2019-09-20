@@ -130,6 +130,7 @@ FileUtils.mkdir_p(tmp_path) unless File.exists?(tmp_path)
 cer_path = File.join(filepath,companyname,'certificate_production.cer')
 profile_path = File.join(tmp_path,'embedded.mobileprovision')
 private_key_path = File.join(filepath,companyname,'key_production.p12')
+cert_id_path = File.join(filepath,companyname,"cert_id_production.txt")
 # cer_p12_path = File.join(filepath,companyname,'certificate.p12')
 app = nil
 begin
@@ -191,7 +192,7 @@ puts "开始获取证书 : " + " #{Time.now}"
 
 cert = spaceship.certificate.production.all
 a_cert = nil
-if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false
+if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false || File.exists?(cert_id_path) == false
   
   client = Aliyun::OSS::Client.new(
     :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
@@ -200,10 +201,13 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   bucket = client.get_bucket('apps-new2')
   key1 = "certificate_and_keys/#{companyname}/key_production.p12"
   key2 = "certificate_and_keys/#{companyname}/certificate_production.cer"
+  key3 = "certificate_and_keys/#{companyname}/cert_id_production.txt"
 
-  if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true
+  if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true && bucket.object_exists?(key3) == true
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
+    bucket.get_object(key3, :file => cert_id_path)
+    a_cert = File.read(cert_id_path)
 
 
     
@@ -215,8 +219,10 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     # cert = Spaceship.certificate.development.all.first
     # puts cert
     File.write(cer_path,a_cert.download)
+    File.write(cert_id_path,a_cert)
     bucket.put_object(key1,:file => private_key_path)
     bucket.put_object(key2,:file => cer_path)
+    bucket.put_object(key3,:file => cert_id_path)
   end
   installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
   if installed == true
@@ -230,8 +236,10 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 end
 
-                      
-a_cert =  spaceship.certificate.production.all.first
+a_cert = File.read(cert_id_path)
+unless a_cert
+    a_cert =  spaceship.certificate.production.all.first
+end
 
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
