@@ -205,8 +205,9 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
 
+
     cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
-    certs = spaceship.certificate.production.all
+    certs =  Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: Spaceship::ConnectAPI::Certificate::CertificateType::IOS_DISTRIBUTION })
     a_cert = certs.find do |certx|
        certx.certificate_content == cert_contents_base_64
     end
@@ -233,7 +234,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 end
 cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
-certs = spaceship.certificate.production.all
+certs =  Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: Spaceship::ConnectAPI::Certificate::CertificateType::IOS_DISTRIBUTION })
 a_cert = certs.find do |certx|
     certx.certificate_content == cert_contents_base_64
 end
