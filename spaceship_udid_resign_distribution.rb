@@ -225,7 +225,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
        puts certx
-       certx.id == infos['UID']
+       certx.owner_id == infos['UID']
     end
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
@@ -268,7 +268,7 @@ puts infos
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
     puts certx
-    certx.id == infos['UID']
+    certx.owner_id == infos['UID']
 end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
