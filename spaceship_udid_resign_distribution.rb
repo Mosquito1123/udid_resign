@@ -205,7 +205,11 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
 
-    a_cert = OpenSSL::X509::Certificate.new(File.binread(cer_path))
+    cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
+    certs = spaceship.certificate.production.all
+    a_cert = certs.find do |certx|
+       certx.certificate_content == cert_contents_base_64
+    end
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
     File.write(private_key_path,pkey)
@@ -228,9 +232,11 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
   
 
 end
-a_cert = File.binread(cer_path)
-
-
+cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
+certs = spaceship.certificate.production.all
+a_cert = certs.find do |certx|
+    certx.certificate_content == cert_contents_base_64
+end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
 puts "开始获取描述文件 : " + " #{Time.now}"
