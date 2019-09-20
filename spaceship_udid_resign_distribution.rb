@@ -214,15 +214,13 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
            'CN' => 'Common Name',
            'OU' => 'Organisation Unit',
            'O' => 'Organisation',
-           'C' => 'Country',
-           'notBefore' => 'Start Datetime',
-           'notAfter' => 'End Datetime'
+           'C' => 'Country'
+ 
     }
     infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
                       .compact
                       .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
-                      .push([openssl_keys_to_readable_keys.fetch("notBefore"), cert.not_before])
-                      .push([openssl_keys_to_readable_keys.fetch("notAfter"), cert.not_after])
+                      
     puts infos
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
@@ -258,15 +256,13 @@ openssl_keys_to_readable_keys = {
            'CN' => 'Common Name',
            'OU' => 'Organisation Unit',
            'O' => 'Organisation',
-           'C' => 'Country',
-           'notBefore' => 'Start Datetime',
-           'notAfter' => 'End Datetime'
+           'C' => 'Country'
+         
 }
 infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
                       .compact
                       .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
-                      .push([openssl_keys_to_readable_keys.fetch("notBefore"), cert.not_before])
-                      .push([openssl_keys_to_readable_keys.fetch("notAfter"), cert.not_after])
+                      
 puts infos
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
