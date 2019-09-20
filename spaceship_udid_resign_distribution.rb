@@ -207,10 +207,26 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 
     cert_contents_base_64 = OpenSSL::X509::Certificate.new(File.binread(cer_path))
-    puts cert_contents_base_64
+    cert_info = cert_contents_base_64.subject.to_s.gsub(/\s*subject=\s*/, "").tr("/", "\n")
+    out_array = cert_info.split("\n")
+    openssl_keys_to_readable_keys = {
+           'UID' => 'User ID',
+           'CN' => 'Common Name',
+           'OU' => 'Organisation Unit',
+           'O' => 'Organisation',
+           'C' => 'Country',
+           'notBefore' => 'Start Datetime',
+           'notAfter' => 'End Datetime'
+    }
+    infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
+                      .compact
+                      .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
+                      .push([openssl_keys_to_readable_keys.fetch("notBefore"), cert.not_before])
+                      .push([openssl_keys_to_readable_keys.fetch("notAfter"), cert.not_after])
+    puts infos
     certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
-       certx.id == cert_contents_base_64.id
+       certx.id == infos['UID']
     end
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
@@ -235,10 +251,26 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 end
 cert_contents_base_64 = OpenSSL::X509::Certificate.new(File.binread(cer_path))
-puts cert_contents_base_64
+cert_info = cert_contents_base_64.subject.to_s.gsub(/\s*subject=\s*/, "").tr("/", "\n")
+out_array = cert_info.split("\n")
+openssl_keys_to_readable_keys = {
+           'UID' => 'User ID',
+           'CN' => 'Common Name',
+           'OU' => 'Organisation Unit',
+           'O' => 'Organisation',
+           'C' => 'Country',
+           'notBefore' => 'Start Datetime',
+           'notAfter' => 'End Datetime'
+}
+infos = out_array.map { |x| x.split(/=+/) if x.include?("=") }
+                      .compact
+                      .map { |k, v| [openssl_keys_to_readable_keys.fetch(k, k), v] }
+                      .push([openssl_keys_to_readable_keys.fetch("notBefore"), cert.not_before])
+                      .push([openssl_keys_to_readable_keys.fetch("notAfter"), cert.not_after])
+puts infos
 certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
-    certx.id == cert_contents_base_64.id
+    certx.id == infos['UID']
 end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
