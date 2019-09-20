@@ -207,9 +207,10 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 
     cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
-    certs =  Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: Spaceship::ConnectAPI::Certificate::CertificateType::IOS_DISTRIBUTION })
+    puts cert_contents_base_64
+    certs =  spaceship.certificate.production.all
     a_cert = certs.find do |certx|
-       certx.certificate_content == cert_contents_base_64
+       certx.id == cert_contents_base_64
     end
   else
     csr, pkey = spaceship.certificate.create_certificate_signing_request
@@ -234,9 +235,10 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 end
 cert_contents_base_64 = Base64.strict_encode64(File.open(cer_path).read)
-certs =  Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: Spaceship::ConnectAPI::Certificate::CertificateType::IOS_DISTRIBUTION })
+puts cert_contents_base_64
+certs =  spaceship.certificate.production.all
 a_cert = certs.find do |certx|
-    certx.certificate_content == cert_contents_base_64
+    certx.id == cert_contents_base_64
 end
 # origin fastlane cert
 # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
