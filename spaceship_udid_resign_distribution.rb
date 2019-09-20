@@ -207,8 +207,8 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     bucket.get_object(key1, :file => private_key_path)
     bucket.get_object(key2, :file => cer_path)
     bucket.get_object(key3, :file => cert_id_path)
-    a_cert = File.read(cert_id_path)
-
+    a_cert_id = File.read(cert_id_path)
+    a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
 
     
   else
@@ -219,7 +219,7 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
     # cert = Spaceship.certificate.development.all.first
     # puts cert
     File.write(cer_path,a_cert.download)
-    File.write(cert_id_path,a_cert)
+    File.write(cert_id_path,a_cert.id)
     bucket.put_object(key1,:file => private_key_path)
     bucket.put_object(key2,:file => cer_path)
     bucket.put_object(key3,:file => cert_id_path)
@@ -236,7 +236,9 @@ if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false
 
 end
 
-a_cert = File.read(cert_id_path)
+a_cert_id = File.read(cert_id_path)
+a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
+puts a_cert
 unless a_cert
     a_cert =  spaceship.certificate.production.all.first
 end
