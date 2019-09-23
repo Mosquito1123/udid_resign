@@ -175,8 +175,13 @@ unless device
    begin
      device = spaceship.device.create!(name: options[:devicename], udid: UDID)
    rescue Exception => exception
-      puts exception.message
-      puts exception.class
+      
+      if exception.message.include? "deviceNumber"
+        puts exception.message
+        puts UDID
+      else
+        puts exception.class
+      end
       exit
    end
 end
