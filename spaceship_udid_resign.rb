@@ -180,7 +180,7 @@ unless device
         puts exception.message
         puts UDID
       else
-        puts exception.class
+        puts exception.message
       end
       exit
    end
