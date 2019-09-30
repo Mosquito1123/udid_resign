@@ -8,7 +8,15 @@ require 'openssl'
 require 'aliyun/oss'
 
 require 'spaceship/portal/portal_client'
+require 'faraday' # HTTP Client
+require 'faraday-cookie_jar'
+require 'faraday_middleware'
+require 'logger'
+require 'tmpdir'
+require 'cgi'
+require 'tempfile'
 
+require 'fastlane/version'
  
 
 options = {}
