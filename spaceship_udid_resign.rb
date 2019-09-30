@@ -111,7 +111,7 @@ default_keychain_result = default_keychain.strip
 user_name = options[:username]
 
 instance = Spaceship::PortalClient.new
-response = instance.send_login_request(user_name,options[:password])
+response = instance.login(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
