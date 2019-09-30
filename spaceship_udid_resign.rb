@@ -109,15 +109,10 @@ default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
-spaceship = nil
-begin
-  spaceship = Spaceship::Launcher.new(user_name,options[:password])
-  puts spaceship
-rescue => exception
-  puts exception.message
-  puts exception.class
-  exit
-end
+
+spaceship = Spaceship::Launcher.new(user_name,options[:password])
+puts spaceship
+
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
 
@@ -185,8 +180,9 @@ unless device
    rescue Exception => exception
       
       if exception.message.include? "deviceNumber"
-        puts exception.message
         puts UDID
+        puts "Spaceship::InvalidUDIDError"
+        
       else
         puts exception.message
       end
