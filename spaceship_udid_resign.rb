@@ -110,8 +110,7 @@ default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 
-response = `fastlane spaceship -u #{user_name} -p #{options[:password]}`
-puts response
+
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
 
