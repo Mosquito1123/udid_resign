@@ -112,7 +112,7 @@ user_name = options[:username]
 spaceship = nil
 begin
   spaceship = Spaceship::Launcher.new(user_name,options[:password])
-  
+  puts spaceship
 rescue => exception
   puts exception.message
   puts exception.class
