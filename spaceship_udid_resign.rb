@@ -110,8 +110,7 @@ default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 
-instance = Spaceship::PortalClient.initialize_dup(cookie: nil, current_team_id: nil)
-response = instance.send_login_request(user_name,options[:password])
+response = Spaceship::PortalClient.send_login_request(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
