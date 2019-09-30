@@ -110,8 +110,8 @@ default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 
-instance = Spaceship::PortalClient.new
-response = instance.login(user_name,options[:password])
+instance = Spaceship::PortalClient.initialize(cookie: nil, current_team_id: nil)
+response = instance.send_login_request(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
