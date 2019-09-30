@@ -7,7 +7,7 @@ require 'fileutils'
 require 'openssl'
 require 'aliyun/oss'
 
-
+require 'spaceship/client'
 
  
 
