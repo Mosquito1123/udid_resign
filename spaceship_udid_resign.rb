@@ -8,15 +8,7 @@ require 'openssl'
 require 'aliyun/oss'
 
 require 'spaceship/portal/portal_client'
-require 'faraday' # HTTP Client
-require 'faraday-cookie_jar'
-require 'faraday_middleware'
-require 'logger'
-require 'tmpdir'
-require 'cgi'
-require 'tempfile'
 
-require 'fastlane/version'
  
 
 options = {}
@@ -118,7 +110,7 @@ default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 
-response = Spaceship::PortalClient.new.send_shared_login_request(user_name,options[:password])
+response = Spaceship::PortalClient.new.do_login(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
