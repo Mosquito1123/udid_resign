@@ -109,9 +109,11 @@ default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
-response = Spaceship::PortalClient.send_login_request(user_name,options[:password])
+instance = Spaceship::Client.new
+response = instance.send_shared_login_request(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
+
 
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
 
