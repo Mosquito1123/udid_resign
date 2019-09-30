@@ -7,7 +7,7 @@ require 'fileutils'
 require 'openssl'
 require 'aliyun/oss'
 
-require 'spaceship/client'
+require 'spaceship/portal/portal_client'
 
  
 
@@ -109,10 +109,9 @@ default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
-PROTOCOL_VERSION = Spaceship::Client::PROTOCOL_VERSION
 
-instance = Spaceship::Client.new(hostname:"https://developer.apple.com/services-account/#{PROTOCOL_VERSION}/")
-response = instance.send_shared_login_request(user_name,options[:password])
+instance = Spaceship::Portal_Client.new
+response = instance.send_login_request(user_name,options[:password])
 puts response
 spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
