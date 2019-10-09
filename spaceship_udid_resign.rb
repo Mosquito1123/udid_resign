@@ -7,9 +7,123 @@ require 'fileutils'
 require 'openssl'
 require 'aliyun/oss'
 
-require 'spaceship/portal/portal_client'
+module Spaceship
+  # rubocop:disable Metrics/ClassLength
+  class Client
+    def send_shared_login_request(user, password)
+  # Check if we have a cached/valid session
+  #
+  # Background:
+  # December 4th 2017 Apple introduced a rate limit - which is of course fine by itself -
+  # but unfortunately also rate limits successful logins. If you call multiple tools in a
+  # lane (e.g. call match 5 times), this would lock you out of the account for a while.
+  # By loading existing sessions and checking if they're valid, we're sending less login requests.
+  # More context on why this change was necessary https://github.com/fastlane/fastlane/pull/11108
+  #
+  # If there was a successful manual login before, we have a session on disk
+    if load_session_from_file
+    # Check if the session is still valid here
+      begin
+      # We use the olympus session to determine if the old session is still valid
+      # As this will raise an exception if the old session has expired
+      # If the old session is still valid, we don't have to do anything else in this method
+      # that's why we return true
+        return true if fetch_olympus_session
+      rescue
+      # If the `fetch_olympus_session` method raises an exception
+      # we'll land here, and therefore continue doing a full login process
+      # This happens if the session we loaded from the cache isn't valid any more
+      # which is common, as the session automatically invalidates after x hours (we don't know x)
+      # In this case we don't actually care about the exact exception, and why it was failing
+      # because either way, we'll have to do a fresh login, where we do the actual error handling
+      puts("Available session is not valid any more. Continuing with normal login.")
+      end
+    end
+  #
+  # The user can pass the session via environment variable (Mainly used in CI environments)
+    if load_session_from_env
+    # see above
+      begin
+      # see above
+        return true if fetch_olympus_session
+      rescue
+        puts("Session loaded from environment variable is not valid. Continuing with normal login.")
+      # see above
+      end
+    end
+  #
+  # After this point, we sure have no valid session any more and have to create a new one
+  #
 
- 
+    data = {
+      accountName: user,
+      password: password,
+      rememberMe: true
+    }
+
+    begin
+    # The below workaround is only needed for 2 step verified machines
+    # Due to escaping of cookie values we have a little workaround here
+    # By default the cookie jar would generate the following header
+    #   DES5c148...=HSARM.......xaA/O69Ws/CHfQ==SRVT
+    # However we need the following
+    #   DES5c148...="HSARM.......xaA/O69Ws/CHfQ==SRVT"
+    # There is no way to get the cookie jar value with " around the value
+    # so we manually modify the cookie (only this one) to be properly escaped
+    # Afterwards we pass this value manually as a header
+    # It's not enough to just modify @cookie, it needs to be done after self.cookie
+    # as a string operation
+      important_cookie = @cookie.store.entries.find { |a| a.name.include?("DES") }
+      if important_cookie
+        modified_cookie = self.cookie # returns a string of all cookies
+        unescaped_important_cookie = "#{important_cookie.name}=#{important_cookie.value}"
+        escaped_important_cookie = "#{important_cookie.name}=\"#{important_cookie.value}\""
+        modified_cookie.gsub!(unescaped_important_cookie, escaped_important_cookie)
+      end
+
+      response = request(:post) do |req|
+        req.url("https://idmsa.apple.com/appleauth/auth/signin")
+        req.body = data.to_json
+        req.headers['Content-Type'] = 'application/json'
+        req.headers['X-Requested-With'] = 'XMLHttpRequest'
+        req.headers['X-Apple-Widget-Key'] = self.itc_service_key
+        req.headers['Accept'] = 'application/json, text/javascript'
+        req.headers["Cookie"] = modified_cookie if modified_cookie
+      end
+    rescue UnauthorizedAccessError
+      raise InvalidUserCredentialsError.new, "Invalid username and password combination. Used '#{user}' as the username."
+    end
+
+  # Now we know if the login is successful or if we need to do 2 factor
+
+    case response.status
+    when 403
+      raise InvalidUserCredentialsError.new, "Invalid username and password combination. Used '#{user}' as the username."
+    when 200
+      fetch_olympus_session
+      return response
+    when 409
+
+      raise UnauthorizedAccessError.new, "Your cookie has expired, please log in again. Used '#{user}' as the username."
+
+    else
+      if (response.body || "").include?('invalid="true"')
+      # User Credentials are wrong
+        raise InvalidUserCredentialsError.new, "Invalid username and password combination. Used '#{user}' as the username."
+      elsif response.status == 412 && AUTH_TYPES.include?(response.body["authType"])
+      # Need to acknowledge Apple ID and Privacy statement - https://github.com/fastlane/fastlane/issues/12577
+      # Looking for status of 412 might be enough but might be safer to keep looking only at what is being reported
+        raise AppleIDAndPrivacyAcknowledgementNeeded.new, "Need to acknowledge to Apple's Apple ID and Privacy statement. Please manually log into https://appleid.apple.com (or https://appstoreconnect.apple.com) to acknowledge the statement."
+      elsif (response['Set-Cookie'] || "").include?("itctx")
+        raise "Looks like your Apple ID is not enabled for App Store Connect, make sure to be able to login online"
+      else
+        info = [response.body, response['Set-Cookie']]
+        raise Tunes::Error.new, info.join("\n")
+      end
+    end
+    end
+  end
+end
 
 options = {}
 option_parser = OptionParser.new do |opts|
@@ -110,8 +224,14 @@ default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
 
+spaceship = nil 
+begin
+  spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
-spaceship = Spaceship::Launcher.new(user_name,options[:password])
+rescue => exception
+  puts exception.class
+  exit
+end
 
 
 filepath = Pathname.new(File.dirname(__FILE__)).realpath
