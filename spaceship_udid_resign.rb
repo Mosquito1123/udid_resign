@@ -103,7 +103,7 @@ module Spaceship
       fetch_olympus_session
       return response
     when 409
-
+      fetch_olympus_session
       raise UnauthorizedAccessError.new, "Your cookie has expired, please log in again. Used '#{user}' as the username."
 
     else
