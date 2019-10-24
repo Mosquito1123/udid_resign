@@ -229,6 +229,7 @@ begin
   spaceship = Spaceship::Launcher.new(user_name,options[:password])
 
 rescue => exception
+  puts user_name
   puts exception.class
   exit
 end
@@ -275,7 +276,9 @@ rescue => exception
   # InternalServerError = Spaceship::InternalServerError
   # BadGatewayError = Spaceship::BadGatewayError
   puts exception.message
+  puts user_name
   puts exception.class
+
   exit
 
 end
@@ -303,14 +306,18 @@ unless device
       if exception.message.include? "deviceNumber"
         puts UDID
         puts "Spaceship::InvalidUDIDError"
+        puts user_name
         
       elsif exception.message.include? "maximum number"
         puts UDID
         puts exception.message
+        puts user_name
         puts "Spaceship::MaxUDIDsError"
       
       elsif exception.message.include? "error"
+        puts UDID
         puts exception.message
+        puts user_name
         puts "Spaceship::OtherUDIDError"
       else 
         puts exception.message
