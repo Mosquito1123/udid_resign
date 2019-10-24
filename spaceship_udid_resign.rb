@@ -305,8 +305,9 @@ unless device
       
       if exception.message.include? "deviceNumber"
         puts UDID
-        puts "Spaceship::InvalidUDIDError"
         puts user_name
+        puts "Spaceship::InvalidUDIDError"
+        
         
       elsif exception.message.include? "maximum number"
         puts UDID
