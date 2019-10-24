@@ -223,7 +223,7 @@ default_keychain = `security default-keychain`
 default_keychain_result = default_keychain.strip
 `security unlock-keychain -p V@kP4eLnUU5l #{default_keychain_result}`
 user_name = options[:username]
-
+puts user_name
 spaceship = nil 
 begin
   spaceship = Spaceship::Launcher.new(user_name,options[:password])
