@@ -197,7 +197,7 @@ option_parser = OptionParser.new do |opts|
   end
 end.parse!
 
-# puts options.inspect
+puts options.inspect
 # if options[:username]
 
 
