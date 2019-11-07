@@ -382,10 +382,16 @@ if options[:development] == true
 
   # puts cert
   profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
-  profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
-        certificate: cert)
-  # puts profile_dev
-  File.write(profile_path, profile_dev.download)
+  begin
+    profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
+      certificate: cert)
+    # puts profile_dev
+    File.write(profile_path, profile_dev.download)
+  rescue => exception
+    puts "Spaceship::CreateProfileError"
+    exit
+  end
+  
  
 
 
@@ -494,7 +500,7 @@ else
   a_cert_id = File.read(cert_id_path)
   puts a_cert_id
   a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
-  puts a_cert
+  # puts a_cert
   unless a_cert
     a_cert =  spaceship.certificate.production.all.first
   end
@@ -506,10 +512,16 @@ else
 
   # puts cert
   profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
-  profile_dev = spaceship.provisioning_profile.ad_hoc.create!(name:profile_name,bundle_id: app.bundle_id,
-        certificate: a_cert)
-  # puts profile_dev
-  File.write(profile_path, profile_dev.download)
+  begin
+    profile_dev = spaceship.provisioning_profile.ad_hoc.create!(name:profile_name,bundle_id: app.bundle_id,
+      certificate: a_cert)
+    # puts profile_dev
+    File.write(profile_path, profile_dev.download)
+  rescue => exception
+    puts "Spaceship::CreateProfileError"
+    exit
+  end
+  
  
 
 
