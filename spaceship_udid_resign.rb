@@ -157,7 +157,12 @@ option_parser = OptionParser.new do |opts|
 
   #BundleID
   opts.on('-b BUNDLEID','--bundleid BundleID','Pass-in Bundle Identifier') do |value|
-    options[:bundle_id] = value
+    options[:bundle_id] = value.strip
+  end
+
+  #DisplayName
+  opts.on('-D DISPLAYNAME','--displayname DisplayName','Pass-in DisplayName') do |value|
+    options[:displayname] = value.strip
   end
 
   #Username
@@ -427,25 +432,50 @@ if options[:development] == true
 
     puts "开始重签 : " + " #{Time.now}"
       if options[:bundleid] == nil || options[:bundleid] == ''
-        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
-        # puts resign
-        # " #{Time.now}" 功能相同
-        puts "重签完成 : " + " #{Time.now}"
-        if resign.include? "success"
-        puts "success"
+        if options[:displayname] == nil || options[:displayname] == ''
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         else
-        puts "failure"
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -n "#{options[:displayname]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         end
       else
-        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}"`
-        # puts resign
-        # " #{Time.now}" 功能相同
-        puts "重签完成 : " + " #{Time.now}"
-        if resign.include? "success"
-        puts "success"
+        if options[:displayname] == nil || options[:displayname] == ''
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+            end
         else
-        puts "failure"
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}" -n "#{options[:displayname]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         end
+        
       end
   end
 else
@@ -558,24 +588,49 @@ else
 
     puts "开始重签 : " + " #{Time.now}"
       if options[:bundleid] == nil || options[:bundleid] == ''
-        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
-        # puts resign
-        # " #{Time.now}" 功能相同
-        puts "重签完成 : " + " #{Time.now}"
-        if resign.include? "success"
-        puts "success"
+        if options[:displayname] == nil || options[:displayname] == ''
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path}`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         else
-        puts "failure"
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -n "#{options[:displayname]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         end
+        
       else
-        resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}"`
-        # puts resign
-        # " #{Time.now}" 功能相同
-        puts "重签完成 : " + " #{Time.now}"
-        if resign.include? "success"
-        puts "success"
+        if options[:displayname] == nil || options[:displayname] == ''
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+            end
         else
-        puts "failure"
+          resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}" -n "#{options[:displayname]}"`
+          # puts resign
+          # " #{Time.now}" 功能相同
+          puts "重签完成 : " + " #{Time.now}"
+          if resign.include? "success"
+          puts "success"
+          else
+          puts "failure"
+          end
         end
       end
   end
