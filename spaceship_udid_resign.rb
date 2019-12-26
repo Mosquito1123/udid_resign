@@ -6,6 +6,8 @@ require 'fastlane_core'
 require 'fileutils'
 require 'openssl'
 require 'aliyun/oss'
+require 'securerandom'
+
 
 module Spaceship
   # rubocop:disable Metrics/ClassLength
@@ -247,7 +249,7 @@ filepath = Pathname.new(File.dirname(__FILE__)).realpath
 puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
 companyname = user_name.split('@').first
-lastname = user_name.split('@').first.reverse!
+lastname = SecureRandom.alphanumeric
 default_bundle_id = ['com',companyname,lastname].join('.')
 #if options[:bundleid] == '' || options[:bundleid] == nil
 #    options[:bundleid] = default_bundle_id
@@ -386,7 +388,7 @@ if options[:development] == true
   cert = spaceship.certificate.development.all
 
   # puts cert
-  profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
+  profile_name = app.bundle_id + " #{SecureRandom.uuid}"
   begin
     profile_dev = spaceship.provisioning_profile.development.create!(name:profile_name,bundle_id: app.bundle_id,
       certificate: cert)
@@ -541,7 +543,7 @@ else
   # a_cert = spaceship.certificate.production.all.first
 
   # puts cert
-  profile_name = app.bundle_id + " #{('a'..'z').to_a.sample(8).join}"
+  profile_name = app.bundle_id + " #{SecureRandom.uuid}"
   begin
     profile_dev = spaceship.provisioning_profile.ad_hoc.create!(name:profile_name,bundle_id: app.bundle_id,
       certificate: a_cert)
