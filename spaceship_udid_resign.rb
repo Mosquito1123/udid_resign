@@ -249,7 +249,7 @@ filepath = Pathname.new(File.dirname(__FILE__)).realpath
 puts "开始生成创建APP : " + " #{Time.now}"
 # Create a new app
 companyname = user_name.split('@').first
-lastname = SecureRandom.alphanumeric
+lastname = SecureRandom.hex(10)
 default_bundle_id = ['com',companyname,lastname].join('.')
 #if options[:bundleid] == '' || options[:bundleid] == nil
 #    options[:bundleid] = default_bundle_id
