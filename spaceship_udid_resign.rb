@@ -598,7 +598,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "Traceback" and resign.include? "zip"
+              if resign.include? "IOError" and resign.include? "zipfile"
               puts "Spaceship::ZipError"
               else
               puts "Spaceship::ResignError"
@@ -612,7 +612,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "Traceback" and resign.include? "zip"
+              if resign.include? "IOError" and resign.include? "zipfile"
               puts "Spaceship::ZipError"
               else
               puts "Spaceship::ResignError"
@@ -629,7 +629,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "Traceback" and resign.include? "zip"
+              if resign.include? "IOError" and resign.include? "zipfile"
               puts "Spaceship::ZipError"
               else
               puts "Spaceship::ResignError"
@@ -643,7 +643,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-            if resign.include? "Traceback" and resign.include? "zip"
+            if resign.include? "IOError" and resign.include? "zipfile"
             puts "Spaceship::ZipError"
             else
             puts "Spaceship::ResignError"
