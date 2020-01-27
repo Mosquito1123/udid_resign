@@ -598,7 +598,11 @@ else
           if resign.include? "success"
           puts "success"
           else
-          puts "failure"
+              if resign.include? "Traceback" and resign.include? "zip"
+              puts "Spaceship::ZipError"
+              else
+              puts "Spaceship::ResignError"
+              end
           end
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -n "#{options[:displayname]}"`
@@ -608,7 +612,11 @@ else
           if resign.include? "success"
           puts "success"
           else
-          puts "failure"
+              if resign.include? "Traceback" and resign.include? "zip"
+              puts "Spaceship::ZipError"
+              else
+              puts "Spaceship::ResignError"
+              end
           end
         end
         
@@ -621,8 +629,12 @@ else
           if resign.include? "success"
           puts "success"
           else
-          puts "failure"
-            end
+              if resign.include? "Traceback" and resign.include? "zip"
+              puts "Spaceship::ZipError"
+              else
+              puts "Spaceship::ResignError"
+              end
+          end
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}" -n "#{options[:displayname]}"`
           # puts resign
@@ -631,7 +643,11 @@ else
           if resign.include? "success"
           puts "success"
           else
-          puts "failure"
+            if resign.include? "Traceback" and resign.include? "zip"
+            puts "Spaceship::ZipError"
+            else
+            puts "Spaceship::ResignError"
+            end
           end
         end
       end
