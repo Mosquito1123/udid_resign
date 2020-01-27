@@ -460,7 +460,7 @@ def glt_handle_outputName():
 def glt_valid_ipa():
     cp_file = 'cp %s %s' % (glt_exportPath,glt_source)
     print(glt_cmd(cp_file))
-     glt_unzipFile(glt_source,os.path.dirname(glt_source))
+    glt_unzipFile(glt_source,os.path.dirname(glt_source))
 #    unzip_file = 'unzip -o %s' % glt_source
 #    print(glt_cmd(unzip_file))
     current_dir = os.path.dirname(glt_source)
