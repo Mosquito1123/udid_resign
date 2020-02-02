@@ -499,12 +499,11 @@ if __name__ == "__main__":
   
 
 		
-    print('进入重签脚本并拉取参数：%s %s' % (ran_str,get_time()))
 
     source, name, bundleid, developer, mobile, output, codesignID, encrypt, version = glt_parser_args(sys.argv)
 
     if codesignID:
-        print(glt_cmd(codesignID))
+        # print(glt_cmd(codesignID))
         glt_exit()
 
     if version:
@@ -523,7 +522,6 @@ if __name__ == "__main__":
             glt_exportPath = output
 
 
-        print('远程拉取ipa：%s %s' % (ran_str,get_time()))
         glt_source = os.path.join(os.path.dirname(__file__),source.split('/')[-1])
         
         if re.match(r'^https?:/{2}\w.+$', source):
@@ -533,37 +531,29 @@ if __name__ == "__main__":
         else:
             # print("local")
             resultPath = os.path.dirname(__file__)
-            print('+++++++%s' % resultPath)
             if os.path.exists(source):
                 shutil.copy(source,resultPath)
-        print('拉取ipa完成：%s %s' % (ran_str,get_time()))
 
-        print('获取sign_identity：%s %s' % (ran_str,get_time()))
 
         glt_developerCodeSign = developer
-        print('获取 mobileprovison：%s %s' % (ran_str,get_time()))
 
         glt_mobile = mobile
         
 
-        print('解压ipa：%s %s' % (ran_str,get_time()))
 
         glt_handle_source(glt_source)
-        print('获取重签entitlements：%s %s' % (ran_str,get_time()))
 
         glt_export_signInfo(glt_mobile)
-        print('重签并输出ipa：%s %s' % (ran_str,get_time()))
 
         glt_handle_outputName()
-        print('修改ipa信息：%s %s' % (ran_str,get_time()))
 
         glt_handle_developer()
-        print('移除本地缓存：%s %s' % (ran_str,get_time()))
 
         glt_remove_local()
 
         # if glt_valid_ipa() == True:
         print('success')
+        glt_exit()
         # else:
             # print('failure')
 
@@ -586,9 +576,12 @@ if __name__ == "__main__":
 
         # if glt_valid_ipa() == True:
         print('success')
+        glt_exit()
         # else:
             # print('failure')
 
 
     else:
         glt_handle_argExcept()
+        glt_exit()
+

@@ -440,20 +440,30 @@ if options[:development] == true
           # " #{Time.now}" 功能相同
           puts "重签完成 : " + " #{Time.now}"
           if resign.include? "success"
-          puts "success"
+            puts "success"
           else
-          puts "failure"
+                if resign.include? "IOError" and resign.include? "zipfile"
+                puts "Platform::ZipError"
+                else
+                puts "Platform::ResignError"
+                end
           end
+          exit
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -n "#{options[:displayname]}"`
           # puts resign
           # " #{Time.now}" 功能相同
           puts "重签完成 : " + " #{Time.now}"
           if resign.include? "success"
-          puts "success"
+            puts "success"
           else
-          puts "failure"
+                if resign.include? "IOError" and resign.include? "zipfile"
+                puts "Platform::ZipError"
+                else
+                puts "Platform::ResignError"
+                end
           end
+          exit
         end
       else
         if options[:displayname] == nil || options[:displayname] == ''
@@ -462,20 +472,30 @@ if options[:development] == true
           # " #{Time.now}" 功能相同
           puts "重签完成 : " + " #{Time.now}"
           if resign.include? "success"
-          puts "success"
+            puts "success"
           else
-          puts "failure"
-            end
+                if resign.include? "IOError" and resign.include? "zipfile"
+                puts "Platform::ZipError"
+                else
+                puts "Platform::ResignError"
+                end
+          end
+          exit
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}" -n "#{options[:displayname]}"`
           # puts resign
           # " #{Time.now}" 功能相同
           puts "重签完成 : " + " #{Time.now}"
           if resign.include? "success"
-          puts "success"
+            puts "success"
           else
-          puts "failure"
+                if resign.include? "IOError" and resign.include? "zipfile"
+                puts "Platform::ZipError"
+                else
+                puts "Platform::ResignError"
+                end
           end
+          exit
         end
         
       end
@@ -599,11 +619,12 @@ else
           puts "success"
           else
               if resign.include? "IOError" and resign.include? "zipfile"
-              puts "Spaceship::ZipError"
+              puts "Platform::ZipError"
               else
-              puts "Spaceship::ResignError"
+              puts "Platform::ResignError"
               end
           end
+          exit
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -n "#{options[:displayname]}"`
           # puts resign
@@ -613,11 +634,12 @@ else
           puts "success"
           else
               if resign.include? "IOError" and resign.include? "zipfile"
-              puts "Spaceship::ZipError"
+              puts "Platform::ZipError"
               else
-              puts "Spaceship::ResignError"
+              puts "Platform::ResignError"
               end
           end
+          exit
         end
         
       else
@@ -630,11 +652,12 @@ else
           puts "success"
           else
               if resign.include? "IOError" and resign.include? "zipfile"
-              puts "Spaceship::ZipError"
+              puts "Platform::ZipError"
               else
-              puts "Spaceship::ResignError"
+              puts "Platform::ResignError"
               end
           end
+          exit
         else
           resign = `python #{tmp_resign_file_path} -i #{input_path} -d "#{codesign_identity}" -o #{output_path} -m #{profile_path} -b "#{options[:bundleid]}" -n "#{options[:displayname]}"`
           # puts resign
@@ -644,11 +667,12 @@ else
           puts "success"
           else
             if resign.include? "IOError" and resign.include? "zipfile"
-            puts "Spaceship::ZipError"
+            puts "Platform::ZipError"
             else
-            puts "Spaceship::ResignError"
+            puts "Platform::ResignError"
             end
           end
+          exit
         end
       end
   end
