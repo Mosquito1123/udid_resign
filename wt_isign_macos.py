@@ -553,19 +553,24 @@ if __name__ == "__main__":
         
 
 
-        glt_handle_source(glt_source)
-
-        glt_export_signInfo(glt_mobile)
-
-        glt_handle_outputName()
-
-        glt_handle_developer()
-
-        glt_remove_local()
+        try:
+            glt_handle_source(glt_source)
+            glt_export_signInfo(glt_mobile)
+            glt_handle_outputName()
+            glt_handle_developer()
+            glt_remove_local()
+        
+        except:
+            print "IOError:zip.zipfile"
+            glt_exit()
+        
+        else:
+            print('success')
+            glt_exit()
+        
 
         # if glt_valid_ipa() == True:
-        print('success')
-        glt_exit()
+        
         # else:
             # print('failure')
 
@@ -582,13 +587,20 @@ if __name__ == "__main__":
         else:
 	    glt_source = encrypt
         glt_encrypt = encrypt
-        glt_handle_source(glt_source)
-        glt_handle_developer()
-        glt_remove_local()
+        try:
+            glt_handle_source(glt_source)
+            glt_handle_developer()
+            glt_remove_local()
+        except:
+            print "IOError:zip.zipfile"
+            glt_exit()
+        else:
+            print('success')
+            glt_exit()
+        
 
         # if glt_valid_ipa() == True:
-        print('success')
-        glt_exit()
+        
         # else:
             # print('failure')
 
