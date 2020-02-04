@@ -185,20 +185,35 @@ def glt_userChooseIsDelete(filePath):
 
 
 def glt_zip(source_dir, output_filename):
-    zipf = zipfile.ZipFile(output_filename, 'w')
-    pre_len = len(os.path.dirname(source_dir))
-    for parent, dirnames, filenames in os.walk(source_dir):
-        for filename in filenames:
-            pathfile = os.path.join(parent, filename)
-            arcname = pathfile[pre_len:].strip(os.path.sep)
-            zipf.write(pathfile, arcname)
-    zipf.close()
+    try:
+        zipf = zipfile.ZipFile(output_filename, 'w')
+        pre_len = len(os.path.dirname(source_dir))
+        for parent, dirnames, filenames in os.walk(source_dir):
+            for filename in filenames:
+                pathfile = os.path.join(parent, filename)
+                arcname = pathfile[pre_len:].strip(os.path.sep)
+                zipf.write(pathfile, arcname)
+    except IOError:
+        print "IOError:zip.zipfile"
+        glt_exit()
+    else:
+        zipf.close()
+    
+    
+    
 
 
 def glt_unzipFile(sourceFile, outputPath):
-    zipObj = zipfile.ZipFile(sourceFile, 'r')
-    zipObj.extractall(outputPath)
-    zipObj.close()
+    try:
+        zipObj = zipfile.ZipFile(sourceFile, 'r')
+        zipObj.extractall(outputPath)
+    except IOError:
+        print "IOError:zip.zipfile"
+        glt_exit()
+    else:
+        zipObj.close()
+
+    
 
 
 def glt_handle_source(source):
@@ -286,7 +301,7 @@ def glt_resignappWithPath(filePath):
 
 
 def glt_handle_resignFiles():
-    findCondition = '\\( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.nibs" -o -name "*.dylib" \\)'
+    findCondition = '\\( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.nibs" -o -name "*.dylib" -o -name "*.a" \\)'
     cmd = 'find -d \"%s\" %s' % (glt_tmpAppPath, findCondition)
     result = glt_cmd(cmd)
     glt_writeToFile(result)
