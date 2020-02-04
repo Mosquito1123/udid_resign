@@ -411,7 +411,7 @@ if options[:development] == true
   puts "复制mobileprovision到对应文件夹 : " + " #{Time.now}"
   resign_file_path = File.join(filepath,'wt_isign_macos.py')
   tmp_resign_file_path = File.join(tmp_path,'wt_isign_macos.py')
-  FileUtils.cp resign_file_path,tmp_path unless File.exists?(tmp_resign_file_path)
+  FileUtils.cp resign_file_path,tmp_path 
   # cer_to_pem = `openssl x509 -inform der -in #{cer_path} -out #{pem_path}`
   # puts cer_to_pem
   puts "获取mobileprovision里面的sign_identity : " + " #{Time.now}"
