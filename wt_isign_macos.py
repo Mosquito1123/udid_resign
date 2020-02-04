@@ -555,16 +555,17 @@ if __name__ == "__main__":
 
         try:
             glt_handle_source(glt_source)
-            glt_export_signInfo(glt_mobile)
-            glt_handle_outputName()
-            glt_handle_developer()
-            glt_remove_local()
+            
         
         except:
             print "IOError:zip.zipfile"
             glt_exit()
         
         else:
+            glt_export_signInfo(glt_mobile)
+            glt_handle_outputName()
+            glt_handle_developer()
+            glt_remove_local()
             print('success')
             glt_exit()
         
@@ -589,12 +590,13 @@ if __name__ == "__main__":
         glt_encrypt = encrypt
         try:
             glt_handle_source(glt_source)
-            glt_handle_developer()
-            glt_remove_local()
+            
         except:
             print "IOError:zip.zipfile"
             glt_exit()
         else:
+            glt_handle_developer()
+            glt_remove_local()
             print('success')
             glt_exit()
         
