@@ -203,7 +203,8 @@ def glt_unzipFile(sourceFile, outputPath):
     try:
         zipObj = zipfile.ZipFile(sourceFile, 'r')
         zipObj.extractall(outputPath)
-    except IOError:
+        
+    except:
         print "IOError:zip.zipfile"
         glt_exit()
     else:
