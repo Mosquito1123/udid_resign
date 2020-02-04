@@ -442,7 +442,7 @@ if options[:development] == true
           if resign.include? "success"
             puts "success"
           else
-                if resign.include? "IOError" and resign.include? "zipfile"
+                if resign.include? "IOError" || resign.include? "zipfile"
                 puts "Platform::ZipError"
                 else
                 puts "Platform::ResignError"
@@ -457,7 +457,7 @@ if options[:development] == true
           if resign.include? "success"
             puts "success"
           else
-                if resign.include? "IOError" and resign.include? "zipfile"
+                if resign.include? "IOError" || resign.include? "zipfile"
                 puts "Platform::ZipError"
                 else
                 puts "Platform::ResignError"
@@ -474,7 +474,7 @@ if options[:development] == true
           if resign.include? "success"
             puts "success"
           else
-                if resign.include? "IOError" and resign.include? "zipfile"
+                if resign.include? "IOError" || resign.include? "zipfile"
                 puts "Platform::ZipError"
                 else
                 puts "Platform::ResignError"
@@ -489,7 +489,7 @@ if options[:development] == true
           if resign.include? "success"
             puts "success"
           else
-                if resign.include? "IOError" and resign.include? "zipfile"
+                if resign.include? "IOError" || resign.include? "zipfile"
                 puts "Platform::ZipError"
                 else
                 puts "Platform::ResignError"
@@ -618,7 +618,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "IOError" and resign.include? "zipfile"
+              if resign.include? "IOError" || resign.include? "zipfile"
               puts "Platform::ZipError"
               else
               puts "Platform::ResignError"
@@ -633,7 +633,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "IOError" and resign.include? "zipfile"
+              if resign.include? "IOError" || resign.include? "zipfile"
               puts "Platform::ZipError"
               else
               puts "Platform::ResignError"
@@ -651,7 +651,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-              if resign.include? "IOError" and resign.include? "zipfile"
+              if resign.include? "IOError" || resign.include? "zipfile"
               puts "Platform::ZipError"
               else
               puts "Platform::ResignError"
@@ -666,7 +666,7 @@ else
           if resign.include? "success"
           puts "success"
           else
-            if resign.include? "IOError" and resign.include? "zipfile"
+            if resign.include? "IOError" || resign.include? "zipfile"
             puts "Platform::ZipError"
             else
             puts "Platform::ResignError"
