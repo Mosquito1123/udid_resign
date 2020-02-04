@@ -20,7 +20,7 @@ print('构造全局参数')
 glt_version = '0.0.1'
 ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
 
-glt_tmp = os.path.join(os.path.dirname(__file__),ran_str)
+glt_tmp = os.path.join(os.path.dirname(__file__))
 #glt_tmp = os.path.dirname(__file__)
 glt_tmpAppPath = '%s/glt_tmp.app' % glt_tmp
 glt_frameworksFile = '%s/glt_frameworks.txt' % glt_tmp
@@ -220,7 +220,7 @@ def glt_handle_source(source):
     global glt_tmp
     global glt_tmpAppPath
     global glt_isIPA
-    glt_tmp = os.path.join(os.path.dirname(__file__),ran_str)
+    glt_tmp = os.path.join(os.path.dirname(__file__))
     glt_userChooseIsDelete(glt_tmp)
     path, fileName = os.path.split(source)
     if '.ipa' in source:
