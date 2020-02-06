@@ -344,7 +344,8 @@ if options[:development] == true
   private_key_path = File.join(filepath,companyname,'key.p12')
   cert = spaceship.certificate.development.all
   if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false
-  
+    puts "登录oss"
+
     client = Aliyun::OSS::Client.new(
     :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
     :access_key_id => 'LTAIe2W3EwkUiV02',
@@ -354,11 +355,13 @@ if options[:development] == true
     key2 = "certificate_and_keys/#{companyname}/certificate.cer"
 
     if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true
+      puts "oss下载证书"
       bucket.get_object(key1, :file => private_key_path)
       bucket.get_object(key2, :file => cer_path)
 
 
     else
+      puts "创建证书"
       csr, pkey = spaceship.certificate.create_certificate_signing_request
       File.write(private_key_path,pkey)
       # Use the signing request to create a new development certificate
@@ -366,9 +369,11 @@ if options[:development] == true
       # cert = Spaceship.certificate.development.all.first
       # puts cert
       File.write(cer_path,cert_first.download)
+      puts "oss上传证书"
       bucket.put_object(key1,:file => private_key_path)
       bucket.put_object(key2,:file => cer_path)
     end
+    puts "导入keychain证书"
     installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
     if installed == true
     
@@ -508,7 +513,7 @@ else
   cert = spaceship.certificate.production.all
   a_cert = nil
   if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false || File.exists?(cert_id_path) == false
-  
+    puts "登录oss"
     client = Aliyun::OSS::Client.new(
     :endpoint => 'https://oss-cn-hongkong.aliyuncs.com',
     :access_key_id => 'LTAIe2W3EwkUiV02',
@@ -517,16 +522,19 @@ else
     key1 = "certificate_and_keys/#{companyname}/key_production.p12"
     key2 = "certificate_and_keys/#{companyname}/certificate_production.cer"
     key3 = "certificate_and_keys/#{companyname}/cert_id_production.txt"
-
+    
     if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true && bucket.object_exists?(key3) == true
+      puts "oss下载证书"
       bucket.get_object(key1, :file => private_key_path)
       bucket.get_object(key2, :file => cer_path)
       bucket.get_object(key3, :file => cert_id_path)
       a_cert_id = File.read(cert_id_path)
+      puts "查找读取证书"
       a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
 
     
     else
+      puts "oss创建证书"
       csr, pkey = spaceship.certificate.create_certificate_signing_request
       File.write(private_key_path,pkey)
       # Use the signing request to create a new development certificate
@@ -535,10 +543,12 @@ else
       # puts cert
       File.write(cer_path,a_cert.download)
       File.write(cert_id_path,a_cert.id)
+      puts "上传证书"
       bucket.put_object(key1,:file => private_key_path)
       bucket.put_object(key2,:file => cer_path)
       bucket.put_object(key3,:file => cert_id_path)
     end
+    puts "导入keychain证书"
     installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
     if installed == true
     
