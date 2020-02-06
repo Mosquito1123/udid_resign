@@ -606,7 +606,7 @@ else
   sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
   # identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
   # puts identity
-  identity = Match::Utils.get_cert_info(cer_path)[3]
+  identity = Match::Utils.get_cert_info(cer_path)[1]["Common Name"]
 
   codesign_identity = identity.strip
   # profile.download
