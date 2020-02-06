@@ -192,7 +192,8 @@ def glt_zip(source_dir, output_filename):
         for filename in filenames:
             pathfile = os.path.join(parent, filename)
             arcname = pathfile[pre_len:].strip(os.path.sep)
-    zipf.write(pathfile, arcname)
+            zipf.write(pathfile, arcname)
+    zipf.close()
    
     
     
