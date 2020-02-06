@@ -637,13 +637,13 @@ else
   # identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
   # puts identity
   puts Match::Utils.get_cert_info(cer_path)
-  identity = nil
-  begin
-    identity = Match::Utils.get_cert_info(cer_path)[1][1]
-  rescue => exception
-    identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
+  # identity = nil
+  # begin
+  #   identity = Match::Utils.get_cert_info(cer_path)[1][1]
+  # rescue => exception
+  identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
 
-  end
+  # end
 
   codesign_identity = identity.strip
   # profile.download
