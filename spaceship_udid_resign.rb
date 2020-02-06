@@ -375,12 +375,27 @@ if options[:development] == true
       bucket.put_object(key2,:file => cer_path)
     end
     puts "导入keychain证书"
-    installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+    installed = false
+    begin
+      installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+
+    rescue => exception
+      puts "Platform::CertCheckerError"
+      installed = false
+      
+    end 
     if installed == true
     
     else
-      FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
-      FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+      begin
+        FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+        FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+      rescue => exception
+        puts "Platform::KeychainImporterError"
+        exit
+
+      end
+      
     end
 
   
@@ -550,12 +565,27 @@ else
       bucket.put_object(key3,:file => cert_id_path)
     end
     puts "导入keychain证书"
-    installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+    installed = false
+    begin
+      installed = FastlaneCore::CertChecker.installed?(cer_path, in_keychain: '/srv/www/Library/Keychains/login.keychain-db')
+
+    rescue => exception
+      puts "Platform::CertCheckerError"
+      installed = false
+      
+    end 
     if installed == true
     
     else
-      FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
-      FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+      begin
+        FastlaneCore::KeychainImporter.import_file(private_key_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+        FastlaneCore::KeychainImporter.import_file(cer_path, '/srv/www/Library/Keychains/login.keychain-db', keychain_password: 'V@kP4eLnUU5l')
+      rescue => exception
+        puts "Platform::KeychainImporterError"
+        exit
+
+      end
+      
     end
 
   end
@@ -607,7 +637,13 @@ else
   # identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
   # puts identity
   puts Match::Utils.get_cert_info(cer_path)
-  identity = Match::Utils.get_cert_info(cer_path)[1][1]
+  identity = nil
+  begin
+    identity = Match::Utils.get_cert_info(cer_path)[1][1]
+  rescue => exception
+    identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
+
+  end
 
   codesign_identity = identity.strip
   # profile.download
