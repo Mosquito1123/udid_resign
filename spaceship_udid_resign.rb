@@ -7,6 +7,7 @@ require 'fileutils'
 require 'openssl'
 require 'aliyun/oss'
 require 'securerandom'
+require 'match'
 
 
 module Spaceship
@@ -558,7 +559,7 @@ else
     end
 
   end
-
+  puts Match::Utils.get_cert_info(cer_path)
   a_cert_id = File.read(cert_id_path)
   puts a_cert_id
   a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
