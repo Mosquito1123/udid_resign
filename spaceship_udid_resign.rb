@@ -527,7 +527,6 @@ else
   private_key_path = File.join(filepath,companyname,'key_production.p12')
   cert_id_path = File.join(filepath,companyname,"cert_id_production.txt")
   cert = spaceship.certificate.production.all
-  a_cert = nil
   if cert.count == 0 || options[:force] == true || File.exists?(cer_path) == false || File.exists?(private_key_path) == false || File.exists?(cert_id_path) == false
     puts "登录oss"
     client = Aliyun::OSS::Client.new(
@@ -539,26 +538,39 @@ else
     key2 = "certificate_and_keys/#{companyname}/certificate_production.cer"
     key3 = "certificate_and_keys/#{companyname}/cert_id_production.txt"
     
-    if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true && bucket.object_exists?(key3) == true
+    if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true && bucket.object_exists?(key3) == true && cert.count != 0
       puts "oss下载证书"
       bucket.get_object(key1, :file => private_key_path)
       bucket.get_object(key2, :file => cer_path)
       bucket.get_object(key3, :file => cert_id_path)
       a_cert_id = File.read(cert_id_path)
-      puts "查找读取证书"
-      a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
-
-    
     else
+      if cert.count >= 1
+        revoke_count = 0
+        cert.each do |certificate|
+          begin
+            puts "#{certificate.id} #{certificate.name} has expired, revoking..." 
+            certificate.revoke!
+            revoke_count += 1
+          rescue => e
+            puts "An error occurred while revoking #{certificate.id} #{certificate.name}" 
+            puts "#{e.message}\n#{e.backtrace.join("\n")}" if FastlaneCore::Globals.verbose?
+            
+          end
+        end
+        puts "#{revoke_count} expired certificate#{'s' if revoke_count != 1} #{revoke_count == 1 ? 'has' : 'have'} been revoked! 👍" if FastlaneCore::Globals.verbose?
+
+      end
       puts "oss创建证书"
       csr, pkey = spaceship.certificate.create_certificate_signing_request
       File.write(private_key_path,pkey)
       # Use the signing request to create a new development certificate
-      a_cert = spaceship.certificate.production.create!(csr: csr)
+      a = spaceship.certificate.production.create!(csr: csr)
       # cert = Spaceship.certificate.development.all.first
       # puts cert
-      File.write(cer_path,a_cert.download)
-      File.write(cert_id_path,a_cert.id)
+      File.write(cer_path,a.download)
+      File.write(cert_id_path,a.id)
+      a_cert_id = a.id
       puts "上传证书"
       bucket.put_object(key1,:file => private_key_path)
       bucket.put_object(key2,:file => cer_path)
@@ -592,10 +604,7 @@ else
   a_cert_id = File.read(cert_id_path)
   puts a_cert_id
   a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
-  # puts a_cert
-  unless a_cert
-    a_cert =  spaceship.certificate.production.all.first
-  end
+ 
 
   # origin fastlane cert
   # `fastlane run cert development:true force:#{options[:force]} username:'#{options[:username]}' filename:'certificate.cer' output_path:'#{tmp_path}' keychain_password:'123456'`
