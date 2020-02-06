@@ -355,13 +355,29 @@ if options[:development] == true
     key1 = "certificate_and_keys/#{companyname}/key.p12"
     key2 = "certificate_and_keys/#{companyname}/certificate.cer"
 
-    if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true
+    if bucket.object_exists?(key1) == true && bucket.object_exists?(key2) == true && cert.count != 0
       puts "oss下载证书"
       bucket.get_object(key1, :file => private_key_path)
       bucket.get_object(key2, :file => cer_path)
 
 
     else
+      if cert.count >= 2
+        revoke_count = 0
+        cert.each do |certificate|
+          begin
+            puts "#{certificate.id} #{certificate.name} has expired, revoking..." 
+            certificate.revoke!
+            revoke_count += 1
+          rescue => e
+            puts "An error occurred while revoking #{certificate.id} #{certificate.name}" 
+            puts "#{e.message}\n#{e.backtrace.join("\n")}" if FastlaneCore::Globals.verbose?
+            
+          end
+        end
+        puts "#{revoke_count} expired certificate#{'s' if revoke_count != 1} #{revoke_count == 1 ? 'has' : 'have'} been revoked! 👍" if FastlaneCore::Globals.verbose?
+
+      end
       puts "创建证书"
       csr, pkey = spaceship.certificate.create_certificate_signing_request
       File.write(private_key_path,pkey)
