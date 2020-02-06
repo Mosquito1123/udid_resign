@@ -559,7 +559,6 @@ else
     end
 
   end
-  puts Match::Utils.get_cert_info(cer_path)
   a_cert_id = File.read(cert_id_path)
   puts a_cert_id
   a_cert = spaceship.certificate.production.find(a_cert_id, mac: false)
@@ -605,8 +604,10 @@ else
   get_cer_subject_mobileprovision = `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' /dev/stdin <<< $(security cms -D -i #{profile_path}) | openssl x509 -inform DER -noout -subject` 
   # puts get_cer_subject_mobileprovision
   sed_s = 's/\(.*\)\/CN=\(.*\)\/OU=\(.*\)/\2/g'
-  identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
+  # identity = `echo '#{get_cer_subject_mobileprovision}' | sed '#{sed_s}'`
   # puts identity
+  identity = Match::Utils.get_cert_info(cer_path)[3]
+
   codesign_identity = identity.strip
   # profile.download
   output_path = options[:output]
