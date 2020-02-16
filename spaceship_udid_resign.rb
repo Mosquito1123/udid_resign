@@ -291,9 +291,16 @@ rescue => exception
 
 end
 unless app 
-    app = spaceship.app.create!(bundle_id: default_bundle_id, name: options[:appname])
-    app.update_service(Spaceship::Portal.app_service.associated_domains.on)
-    app.update_service(Spaceship::Portal.app_service.push_notification.on)
+    begin
+      app = spaceship.app.create!(bundle_id: default_bundle_id, name: options[:appname])
+      app.update_service(Spaceship::Portal.app_service.associated_domains.on)
+      app.update_service(Spaceship::Portal.app_service.push_notification.on)
+    rescue => exception
+      app = Spaceship::Portal.app.all.last
+      app.update_service(Spaceship::Portal.app_service.associated_domains.on)
+      app.update_service(Spaceship::Portal.app_service.push_notification.on)
+    end
+    
 end
 
 
@@ -432,8 +439,9 @@ if options[:development] == true
     # puts profile_dev
     File.write(profile_path, profile_dev.download)
   rescue => exception
-    puts "Spaceship::CreateProfileError"
-    exit
+     puts "Spaceship::CreateProfileError"
+
+     exit
   end
   
  
@@ -635,8 +643,9 @@ else
     # puts profile_dev
     File.write(profile_path, profile_dev.download)
   rescue => exception
-    puts "Spaceship::CreateProfileError"
-    exit
+     puts "Spaceship::CreateProfileError"
+    
+     exit
   end
   
  
